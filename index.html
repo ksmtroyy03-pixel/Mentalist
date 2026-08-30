@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mentalist — Observe, Interpret, Understand</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #0b0d12;
+  color: #eeeeee;
+  min-height: 100vh;
+}
+
+header {
+  padding: 22px;
+  border-bottom: 1px solid #252832;
+  background: #10131a;
+}
+
+.logo {
+  font-size: 25px;
+  font-weight: bold;
+  letter-spacing: 3px;
+}
+
+.tagline {
+  margin-top: 5px;
+  color: #9b9eaa;
+  font-size: 13px;
+}
+
+nav {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 12px;
+  background: #0f1117;
+}
+
+nav button {
+  background: #191c24;
+  border: 1px solid #292d38;
+  color: #ddd;
+  padding: 10px 15px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+nav button:hover {
+  background: #252a35;
+}
+
+main {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+section {
+  display: none;
+}
+
+section.active {
+  display: block;
+}
+
+.hero {
+  padding: 25px 5px;
+}
+
+.hero h1 {
+  font-size: 30px;
+  margin-bottom: 8px;
+}
+
+.hero p {
+  color: #999eaa;
+}
+
+.card {
+  background: #141720;
+  border: 1px solid #252936;
+  border-radius: 18px;
+  padding: 20px;
+  margin: 15px 0;
+}
+
+.card h2 {
+  margin-bottom: 12px;
+}
+
+.upload {
+  border: 2px dashed #383d4b;
+  padding: 35px 15px;
+  text-align: center;
+  border-radius: 18px;
+  margin-top: 15px;
+}
+
+input[type="file"] {
+  margin-top: 15px;
+}
+
+button {
+  cursor: pointer;
+}
+
+.primary {
+  background: #d9d9df;
+  color: #101116;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: bold;
+  margin-top: 12px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 180px;
+  background: #0d0f14;
+  color: #eee;
+  border: 1px solid #303441;
+  border-radius: 12px;
+  padding: 15px;
+  resize: vertical;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.flashcard {
+  background: #191c25;
+  border-radius: 15px;
+  padding: 20px;
+  margin-top: 12px;
+}
+
+.flashcard .answer {
+  margin-top: 15px;
+  color: #aaa;
+  display: none;
+}
+
+.plan-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px;
+  border-bottom: 1px solid #292d36;
+}
+
+.progress {
+  height: 8px;
+  background: #292d35;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.progress div {
+  height: 100%;
+  width: 35%;
+  background: #aaa;
+}
+
+.small {
+  color: #888e9b;
+  font-size: 13px;
+}
+
+.audio-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.audio-controls button {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #303441;
+  background: #191c24;
+  color: white;
+}
+
+footer {
+  text-align: center;
+  color: #666b77;
+  padding: 30px;
+  font-size: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">MENTALIST</div>
+  <div class="tagline">Observe, Interpret, Understand</div>
+</header>
+
+<nav>
+  <button onclick="showPage('dashboard')">🏠 Home</button>
+  <button onclick="showPage('upload')">📤 Upload</button>
+  <button onclick="showPage('notes')">🧠 Notes</button>
+  <button onclick="showPage('flashcards')">🃏 Flashcards</button>
+  <button onclick="showPage('planner')">📅 Study Plan</button>
+</nav>
+
+<main>
+
+<!-- DASHBOARD -->
+<section id="dashboard" class="active">
+
+  <div class="hero">
+    <h1>Welcome to Mentalist.</h1>
+    <p>Your study space for understanding, remembering and mastering.</p>
+  </div>
+
+  <div class="card">
+    <h2>📚 Continue studying</h2>
+    <p>Biology — Cell Structure</p>
+
+    <div class="progress">
+      <div></div>
+    </div>
+
+    <p class="small" style="margin-top:8px;">
+      35% completed
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>🧠 Today's focus</h2>
+
+    <div class="plan-item">
+      <span>Read simplified notes</span>
+      <span>25 min</span>
+    </div>
+
+    <div class="plan-item">
+      <span>Review flashcards</span>
+      <span>10 min</span>
+    </div>
+
+    <div class="plan-item">
+      <span>Quick revision</span>
+      <span>10 min</span>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- UPLOAD -->
+<section id="upload">
+
+  <div class="hero">
+    <h1>📤 Upload Study Material</h1>
+    <p>Give Mentalist something to understand.</p>
+  </div>
+
+  <div class="card">
+
+    <div class="upload">
+
+      <h2>Drop your file here</h2>
+
+      <p class="small">
+        PDF, TXT and other study materials
+      </p>
+
+      <input
+        type="file"
+        id="fileInput"
+        accept=".pdf,.txt,.doc,.docx"
+      >
+
+      <br>
+
+      <button class="primary" onclick="processFile()">
+        🧠 Analyze Material
+      </button>
+
+      <p id="fileStatus" class="small" style="margin-top:15px;"></p>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- NOTES -->
+<section id="notes">
+
+  <div class="hero">
+    <h1>🧠 Simplified Notes</h1>
+    <p>Understand the material in simple language.</p>
+  </div>
+
+  <div class="card">
+
+    <textarea id="notesText">
+Photosynthesis is the process plants use to make their own food.
+
+Plants use three important things:
+
+1. Sunlight
+2. Water
+3. Carbon dioxide
+
+The plant uses these ingredients to produce food and releases oxygen.
+
+Think of a plant like a tiny food factory powered by sunlight.
+    </textarea>
+
+    <div class="audio-controls">
+
+      <button onclick="speakNotes()">🔊 Play</button>
+
+      <button onclick="pauseSpeech()">⏸ Pause</button>
+
+      <button onclick="resumeSpeech()">▶ Resume</button>
+
+      <button onclick="stopSpeech()">⏹ Stop</button>
+
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <h2>🎯 Key Points</h2>
+
+    <ul style="line-height:2; padding-left:20px;">
+      <li>Plants make their own food.</li>
+      <li>Sunlight provides energy.</li>
+      <li>Water is needed.</li>
+      <li>Carbon dioxide is needed.</li>
+      <li>Oxygen is released.</li>
+    </ul>
+
+    <button class="primary" onclick="speakKeyPoints()">
+      🔊 Listen to Key Points
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- FLASHCARDS -->
+<section id="flashcards">
+
+  <div class="hero">
+    <h1>🃏 Flashcards</h1>
+    <p>Test your memory instead of just rereading.</p>
+  </div>
+
+  <div class="flashcard">
+
+    <h2>What is photosynthesis?</h2>
+
+    <div class="answer" id="answer1">
+      Photosynthesis is how plants make their own food using
+      sunlight, water and carbon dioxide.
+    </div>
+
+    <button class="primary" onclick="toggleAnswer('answer1')">
+      Show Answer
+    </button>
+
+  </div>
+
+  <div class="flashcard">
+
+    <h2>What does photosynthesis produce?</h2>
+
+    <div class="answer" id="answer2">
+      Plants produce food and release oxygen.
+    </div>
+
+    <button class="primary" onclick="toggleAnswer('answer2')">
+      Show Answer
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- PLANNER -->
+<section id="planner">
+
+  <div class="hero">
+    <h1>📅 Study Plan</h1>
+    <p>Your timetable. Your rules.</p>
+  </div>
+
+  <div class="card">
+
+    <div class="plan-item">
+      <span>Monday — Biology</span>
+      <span>25 min</span>
+    </div>
+
+    <div class="plan-item">
+      <span>Tuesday — Mathematics</span>
+      <span>30 min</span>
+    </div>
+
+    <div class="plan-item">
+      <span>Wednesday — English</span>
+      <span>20 min</span>
+    </div>
+
+    <div class="plan-item">
+      <span>Thursday — Biology revision</span>
+      <span>25 min</span>
+    </div>
+
+    <div class="plan-item">
+      <span>Friday — Flashcards</span>
+      <span>15 min</span>
+    </div>
+
+    <button class="primary" onclick="alert('Planner editing will be added in the next version!')">
+      ✏️ Edit Timetable
+    </button>
+
+  </div>
+
+</section>
+
+</main>
+
+<footer>
+  Mentalist • Observe, Interpret, Understand
+</footer>
+
+
+<script>
+
+function showPage(page) {
+
+  document.querySelectorAll("section").forEach(section => {
+    section.classList.remove("active");
+  });
+
+  document.getElementById(page).classList.add("active");
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+
+function processFile() {
+
+  const file = document.getElementById("fileInput").files[0];
+
+  if (!file) {
+    document.getElementById("fileStatus").innerText =
+      "Please choose a file first.";
+    return;
+  }
+
+  document.getElementById("fileStatus").innerText =
+    "✓ " + file.name + " uploaded. AI analysis will be connected next.";
+
+  showPage("notes");
+}
+
+
+function speakNotes() {
+
+  const text = document.getElementById("notesText").value;
+
+  speechSynthesis.cancel();
+
+  const speech = new SpeechSynthesisUtterance(text);
+
+  speech.rate = 0.9;
+  speech.pitch = 1;
+
+  speechSynthesis.speak(speech);
+}
+
+
+function speakKeyPoints() {
+
+  const text =
+  "Key points. Plants make their own food. " +
+  "Sunlight provides energy. Water is needed. " +
+  "Carbon dioxide is needed. Oxygen is released.";
+
+  speechSynthesis.cancel();
+
+  const speech = new SpeechSynthesisUtterance(text);
+
+  speech.rate = 0.9;
+
+  speechSynthesis.speak(speech);
+}
+
+
+function pauseSpeech() {
+  speechSynthesis.pause();
+}
+
+
+function resumeSpeech() {
+  speechSynthesis.resume();
+}
+
+
+function stopSpeech() {
+  speechSynthesis.cancel();
+}
+
+
+function toggleAnswer(id) {
+
+  const answer = document.getElementById(id);
+
+  if (answer.style.display === "block") {
+    answer.style.display = "none";
+  } else {
+    answer.style.display = "block";
+  }
+
+}
+
+</script>
+
+</body>
+  </html>
