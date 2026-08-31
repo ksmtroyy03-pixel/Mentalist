@@ -757,11 +757,11 @@ footer {
 
 <header>
 
-  <button
-    class="menu-button"
-    onclick="toggleSidebar()"
-    aria-label="Open menu"
-    id="menuButton">
+ <button
+  class="menu-button"
+  onclick="toggleSidebar()"
+  aria-label="Open menu"
+  id="menuButton">
 
     <div class="menu-icon">
       <span></span>
@@ -1174,7 +1174,7 @@ function showPage(page, button) {
 
   document
     .querySelectorAll("section")
-    .forEach(section => {
+    .forEach(function (section) {
 
       section.classList.remove("active");
 
@@ -1183,6 +1183,7 @@ function showPage(page, button) {
 
   const target =
     document.getElementById(page);
+
 
   if (target) {
 
@@ -1193,7 +1194,7 @@ function showPage(page, button) {
 
   document
     .querySelectorAll(".side-button")
-    .forEach(item => {
+    .forEach(function (item) {
 
       item.classList.remove("active");
 
@@ -1207,15 +1208,21 @@ function showPage(page, button) {
   }
 
 
+  const sidebar =
+    document.getElementById("sidebar");
+
+
+  if (sidebar) {
+
+    sidebar.classList.remove("open");
+
+  }
+
+
   window.scrollTo({
     top: 0,
     behavior: "smooth"
   });
-
-
-  document
-    .getElementById("sidebar")
-    .classList.remove("open");
 
 }
 
@@ -1226,6 +1233,30 @@ function showSettings() {
 
 }
 
+document
+  .querySelectorAll(".side-button")
+  .forEach(function (button) {
+
+    button.addEventListener(
+      "click",
+      function () {
+
+        const page =
+          button.getAttribute("data-page");
+
+        if (page) {
+
+          showPage(
+            page,
+            button
+          );
+
+        }
+
+      }
+    );
+
+  });
 
 /* FILE ANALYSIS */
 
@@ -1965,94 +1996,6 @@ if (uploadArea) {
   );
 
 }
-
-</script>
-
-<script>
-
-document.addEventListener("DOMContentLoaded", function () {
-
-  const sidebar =
-    document.getElementById("sidebar");
-
-  const menuButton =
-    document.getElementById("menuButton");
-
-  const buttons =
-    document.querySelectorAll(".side-button");
-
-
-  /* MENU */
-
-  if (menuButton && sidebar) {
-
-    menuButton.onclick = function () {
-
-      sidebar.classList.toggle("open");
-
-    };
-
-  }
-
-
-  /* SIDEBAR BUTTONS */
-
-  buttons.forEach(function (button) {
-
-    button.onclick = function () {
-
-      const page =
-        button.getAttribute("data-page");
-
-
-      if (!page) {
-        return;
-      }
-
-
-      document
-        .querySelectorAll("section")
-        .forEach(function (section) {
-
-          section.classList.remove("active");
-
-        });
-
-
-      const target =
-        document.getElementById(page);
-
-
-      if (target) {
-
-        target.classList.add("active");
-
-      }
-
-
-      buttons.forEach(function (item) {
-
-        item.classList.remove("active");
-
-      });
-
-
-      button.classList.add("active");
-
-
-      sidebar.classList.remove("open");
-
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-
-    };
-
-  }
-
-});
 
 </script>
 
