@@ -1665,6 +1665,7 @@ function showPage(page, button) {
    FILE ANALYSIS
 ========================= */
 
+     
 async function processFile() {
 
   const fileInput =
@@ -1685,31 +1686,30 @@ async function processFile() {
 
   if (!file) {
 
-    status.className =
-      "status error";
+    status.className = "status error";
 
     status.innerText =
       "Please select a file first.";
 
     return;
-
   }
 
 
-  if (
-    !file.name
-      .toLowerCase()
-      .endsWith(".txt")
-  ) {
+  const allowedTypes = [
+    "text/plain",
+    "application/pdf",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  ];
 
-    status.className =
-      "status error";
+
+  if (!allowedTypes.includes(file.type)) {
+
+    status.className = "status error";
 
     status.innerText =
-      "This version supports TXT files.";
+      "Please select a TXT, PDF, or DOCX file.";
 
     return;
-
   }
 
 
@@ -1717,31 +1717,110 @@ async function processFile() {
 
     button.disabled = true;
 
-    status.className =
-      "status";
+    status.className = "status";
 
     status.innerText =
       "Reading your file...";
 
-
     loading.classList.add("active");
 
 
-    const text =
-      await file.text();
+    const arrayBuffer =
+      await file.arrayBuffer();
 
 
-    if (!text.trim()) {
+    const bytes =
+      new Uint8Array(arrayBuffer);
+
+
+    let binary = "";
+
+    const chunkSize = 8192;
+
+
+    for (
+      let i = 0;
+      i < bytes.length;
+      i += chunkSize
+    ) {
+
+      binary += String.fromCharCode(
+        ...bytes.subarray(
+          i,
+          Math.min(
+            i + chunkSize,
+            bytes.length
+          )
+        )
+      );
+
+    }
+
+
+    const base64 =
+      btoa(binary);
+
+
+    status.innerText =
+      "Extracting the text...";
+
+
+    const extractResponse =
+      await fetch(
+        "/api/analyze",
+        {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+
+              fileData:
+                base64,
+
+              fileType:
+                file.type
+
+            })
+
+        }
+      );
+
+
+    const extractedData =
+      await extractResponse.json();
+
+
+    if (!extractResponse.ok) {
 
       throw new Error(
-        "The selected file appears to be empty."
+        extractedData.error ||
+        "Could not read the file."
+      );
+
+    }
+
+
+    const text =
+      extractedData.text;
+
+
+    if (!text || !text.trim()) {
+
+      throw new Error(
+        "No readable text was found in the file."
       );
 
     }
 
 
     status.innerText =
-      "Sending material to Mentalist...";
+      "Mentalist is analyzing your material...";
 
 
     const prompt = `
@@ -1779,35 +1858,35 @@ ${text}
 `;
 
 
-    const response =
+    const aiResponse =
       await fetch(
         "/api/chat",
         {
 
-          method:
-            "POST",
+          method: "POST",
 
           headers: {
-
             "Content-Type":
               "application/json"
-
           },
 
           body:
             JSON.stringify({
-              message: prompt
+
+              message:
+                prompt
+
             })
 
-        }
-      );
+          }
+        );
 
 
     const data =
-      await response.json();
+      await aiResponse.json();
 
 
-    if (!response.ok) {
+    if (!aiResponse.ok) {
 
       throw new Error(
         data.error ||
@@ -1826,6 +1905,51 @@ ${text}
     }
 
 
+    parseAIResponse(
+      data.answer
+    );
+
+
+    status.className =
+      "status success";
+
+    status.innerText =
+      "Analysis complete.";
+
+
+    loading.classList.remove(
+      "active"
+    );
+
+
+    showPage("notes");
+
+
+  } catch (error) {
+
+    console.error(error);
+
+
+    loading.classList.remove(
+      "active"
+    );
+
+
+    status.className =
+      "status error";
+
+    status.innerText =
+      error.message ||
+      "Something went wrong while analyzing the file.";
+
+
+  } finally {
+
+    button.disabled = false;
+
+  }
+
+}
     parseAIResponse(
       data.answer
     );
