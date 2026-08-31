@@ -2307,36 +2307,37 @@ document.addEventListener("DOMContentLoaded", function () {
 
 /* THEME SYSTEM */
 
-const themeSelect =
-  document.getElementById("themeSelect");
+document.addEventListener("DOMContentLoaded", function () {
+
+  const themeSelect =
+    document.getElementById("themeSelect");
 
 
-function applyTheme(theme) {
+  function applyTheme(theme) {
 
-  if (theme === "light") {
+    if (theme === "light") {
 
-    document.body.removeAttribute(
-      "data-theme"
-    );
+      document.body.removeAttribute(
+        "data-theme"
+      );
 
-  } else {
+    } else {
 
-    document.body.setAttribute(
-      "data-theme",
+      document.body.setAttribute(
+        "data-theme",
+        theme
+      );
+
+    }
+
+
+    localStorage.setItem(
+      "mentalist-theme",
       theme
     );
 
   }
 
-  localStorage.setItem(
-    "mentalist-theme",
-    theme
-  );
-
-}
-
-
-if (themeSelect) {
 
   const savedTheme =
     localStorage.getItem(
@@ -2344,27 +2345,32 @@ if (themeSelect) {
     ) || "light";
 
 
-  themeSelect.value =
-    savedTheme;
-
-
   applyTheme(
     savedTheme
   );
 
 
-  themeSelect.addEventListener(
-    "change",
-    function () {
+  if (themeSelect) {
 
-      applyTheme(
-        themeSelect.value
-      );
+    themeSelect.value =
+      savedTheme;
 
-    }
-  );
 
-}
+    themeSelect.addEventListener(
+      "change",
+      function () {
+
+        applyTheme(
+          themeSelect.value
+        );
+
+      }
+    );
+
+  }
+
+});
+
 </script>
 
 </body>
