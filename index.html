@@ -926,34 +926,68 @@ footer {
 
     <!-- NOTES -->
 
-    <section id="notes">
+<section id="notes">
 
-      <div class="page-header">
+  <div class="page-header">
+    <h1>Notes</h1>
+    <p>Simplified notes generated from your study material.</p>
+  </div>
 
-        <h1>
-          Notes
-        </h1>
+  <div class="notes-content">
 
-        <p>
-          Simplified notes generated from your
-          study material.
-        </p>
+    <h2>Simplified Notes</h2>
 
-      </div>
+    <div
+      id="notesText"
+      class="notes-text">
+      Upload and analyze a file to generate your notes.
+    </div>
+
+    <div class="audio-controls">
+
+      <button
+        class="secondary-button"
+        onclick="speakNotes()">
+        Play
+      </button>
+
+      <button
+        class="secondary-button"
+        onclick="pauseSpeech()">
+        Pause
+      </button>
+
+      <button
+        class="secondary-button"
+        onclick="resumeSpeech()">
+        Resume
+      </button>
+
+      <button
+        class="secondary-button"
+        onclick="stopSpeech()">
+        Stop
+      </button>
+
+    </div>
+
+  </div>
 
 
-      <div
-        class="notes-content"
-        id="notesOutput">
+  <div class="card">
 
-        <p class="small">
-          Upload and analyze a file to generate
-          your notes.
-        </p>
+    <h2>Key Points</h2>
 
-      </div>
+    <div
+      id="keyPointsOutput"
+      class="notes-text"
+      style="margin-top:15px;">
+      Key points will appear here after analysis.
+    </div>
 
-    </section>
+  </div>
+
+</section>
 
 
     <!-- FLASHCARDS -->
