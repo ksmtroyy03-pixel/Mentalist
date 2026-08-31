@@ -4,10 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Mentalist — Observe, Interpret, Understand</title>
+<title>Mentalist</title>
 
 <style>
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -15,21 +14,17 @@
 }
 
 :root {
-  --background: #17181c;
-  --surface: #202126;
-  --surface-light: #292a2f;
-  --surface-hover: #303137;
-
-  --border: rgba(255,255,255,0.08);
-
-  --text: #f1f1f1;
-  --muted: #a1a3aa;
-  --muted-dark: #777a82;
-
-  --sidebar-width: 245px;
-  --header-height: 72px;
-
-  --transition: 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+  --bg: #f5f5f5;
+  --panel: #ffffff;
+  --panel-soft: #eeeeee;
+  --border: #dddddd;
+  --text: #202123;
+  --muted: #6b6b6b;
+  --sidebar: #eeeeee;
+  --sidebar-hover: #dedede;
+  --button: #202123;
+  --button-text: #ffffff;
+  --shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
 
 html {
@@ -38,141 +33,92 @@ html {
 
 body {
   font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
     Arial,
-    Helvetica,
     sans-serif;
 
-  background: var(--background);
+  background: var(--bg);
   color: var(--text);
-
   min-height: 100vh;
-
   overflow-x: hidden;
 }
 
 
-/* =========================
-   HEADER
-========================= */
+/* HEADER */
 
 header {
-
   position: fixed;
-
   top: 0;
   left: 0;
   right: 0;
 
-  height: var(--header-height);
+  height: 76px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 24px;
+
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border-bottom: 1px solid var(--border);
 
   z-index: 1000;
 
-  display: flex;
-  align-items: center;
-
-  padding: 0 22px;
-
-  background:
-    rgba(41, 42, 47, 0.88);
-
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-
-  border-bottom:
-    1px solid var(--border);
-
-  box-shadow:
-    0 10px 35px rgba(0,0,0,0.16);
-
   transition:
-    background var(--transition),
-    box-shadow var(--transition);
+    left 0.35s ease,
+    background 0.3s ease;
 }
-
-.logo {
-
-  font-size: 19px;
-
-  font-weight: 700;
-
-  letter-spacing: 4px;
-
-  white-space: nowrap;
-}
-
-.tagline {
-
-  margin-left: 16px;
-
-  color: var(--muted);
-
-  font-size: 12px;
-}
-
-
-/* =========================
-   MENU BUTTON
-========================= */
 
 .menu-button {
+  width: 42px;
+  height: 42px;
 
-  width: 40px;
-  height: 40px;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  margin-right: 14px;
-
-  border: 1px solid transparent;
-
+  border: none;
   border-radius: 10px;
 
   background: transparent;
 
-  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   cursor: pointer;
 
   transition:
-    background var(--transition),
-    border-color var(--transition);
+    background 0.25s ease,
+    transform 0.25s ease;
 }
 
 .menu-button:hover {
-
-  background: var(--surface-hover);
-
-  border-color: var(--border);
+  background: var(--panel-soft);
 }
 
 .menu-icon {
-
-  width: 18px;
+  width: 19px;
   height: 14px;
 
   position: relative;
 }
 
 .menu-icon span {
-
   position: absolute;
 
   left: 0;
 
-  width: 18px;
+  width: 100%;
   height: 2px;
+
+  background: var(--text);
 
   border-radius: 2px;
 
-  background: #d5d6da;
-
-  transition:
-    transform var(--transition),
-    top var(--transition),
-    opacity var(--transition);
+  transition: 0.3s ease;
 }
 
 .menu-icon span:nth-child(1) {
@@ -187,979 +133,624 @@ header {
   top: 12px;
 }
 
+.brand {
+  margin-left: 16px;
+}
 
-/* =========================
-   SIDEBAR
-========================= */
+.logo {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+.tagline {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+
+/* SIDEBAR */
 
 .sidebar {
-
   position: fixed;
 
-  top: var(--header-height);
-
+  top: 76px;
   left: 0;
-
   bottom: 0;
 
-  width: var(--sidebar-width);
+  width: 250px;
 
-  z-index: 900;
+  background: var(--sidebar);
+
+  border-right: 1px solid var(--border);
 
   padding: 18px 12px;
 
-  background:
-    rgba(30,31,36,0.96);
-
-  border-right:
-    1px solid var(--border);
-
-  transform:
-    translateX(0);
+  transform: translateX(-100%);
 
   transition:
-    transform var(--transition),
-    box-shadow var(--transition);
+    transform 0.38s cubic-bezier(.22,1,.36,1);
+
+  z-index: 900;
 
   overflow-y: auto;
 }
 
-.sidebar.hidden {
-
-  transform:
-    translateX(calc(-1 * var(--sidebar-width)));
-
-  box-shadow: none;
+.sidebar.open {
+  transform: translateX(0);
 }
 
 .sidebar-title {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
 
-  padding:
-    8px 12px 10px;
-
-  color: var(--muted-dark);
-
-  font-size: 10px;
-
-  letter-spacing: 2px;
-
+  letter-spacing: 1px;
   text-transform: uppercase;
+
+  padding: 10px 12px;
+  margin-bottom: 6px;
 }
 
-.sidebar button {
-
+.side-button {
   width: 100%;
 
   display: flex;
-
   align-items: center;
 
-  padding:
-    11px 13px;
+  padding: 12px;
 
-  margin-bottom: 4px;
+  margin-bottom: 5px;
 
-  border:
-    1px solid transparent;
-
+  border: none;
   border-radius: 10px;
 
   background: transparent;
 
-  color: var(--muted);
-
-  font-size: 14px;
+  color: var(--text);
 
   text-align: left;
+
+  font-size: 14px;
 
   cursor: pointer;
 
   transition:
-    background var(--transition),
-    color var(--transition),
-    transform var(--transition),
-    border-color var(--transition);
+    background 0.25s ease,
+    transform 0.25s ease,
+    padding-left 0.25s ease;
 }
 
-.sidebar button:hover {
-
-  background:
-    var(--surface-hover);
-
-  color: var(--text);
-
-  transform:
-    translateX(2px);
+.side-button:hover {
+  background: var(--sidebar-hover);
+  padding-left: 16px;
 }
 
-.sidebar button.active {
+.side-button.active {
+  background: #d9d9d9;
+  font-weight: 600;
+}
 
-  background:
-    #303137;
-
-  color:
-    var(--text);
-
-  border-color:
-    rgba(255,255,255,0.07);
+.side-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 16px 8px;
 }
 
 
-/* =========================
-   MAIN
-========================= */
+/* MAIN */
 
 main {
-
-  margin-left:
-    var(--sidebar-width);
-
-  padding-top:
-    var(--header-height);
-
   min-height: 100vh;
 
+  padding-top: 76px;
+
   transition:
-    margin-left var(--transition);
+    filter 0.35s ease,
+    transform 0.35s ease;
 }
 
-main.expanded {
-
-  margin-left: 0;
+main.sidebar-open {
+  filter: blur(0);
 }
+
+
+/* CONTENT */
 
 .content {
+  width: min(900px, calc(100% - 32px));
 
-  width:
-    min(920px, 100%);
+  margin: 0 auto;
 
-  margin:
-    0 auto;
-
-  padding:
-    30px 28px 80px;
+  padding: 55px 0 80px;
 }
 
-
-/* =========================
-   SECTIONS
-========================= */
-
 section {
-
   display: none;
 
   animation:
-    sectionEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    sectionIn 0.45s cubic-bezier(.22,1,.36,1);
 }
 
 section.active {
-
   display: block;
 }
 
-@keyframes sectionEnter {
-
+@keyframes sectionIn {
   from {
-
     opacity: 0;
-
-    transform:
-      translateY(14px);
-
+    transform: translateY(18px);
   }
 
   to {
-
     opacity: 1;
-
-    transform:
-      translateY(0);
-
+    transform: translateY(0);
   }
 }
 
 
-/* =========================
-   HERO
-========================= */
+/* WELCOME */
 
-.hero {
+.welcome {
+  min-height: 55vh;
 
-  padding:
-    35px 4px 28px;
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+
+  padding: 30px 10px;
 }
 
-.hero h1 {
+.welcome h1 {
+  font-size: clamp(32px, 7vw, 50px);
 
-  font-size: 30px;
+  font-weight: 650;
 
-  line-height: 1.25;
+  letter-spacing: -1.5px;
 
-  font-weight: 600;
-
-  margin-bottom: 9px;
+  margin-bottom: 15px;
 }
 
-.hero p {
+.welcome p {
+  max-width: 650px;
 
-  color:
-    var(--muted);
+  color: var(--muted);
 
-  line-height:
-    1.65;
+  font-size: 17px;
+
+  line-height: 1.7;
 }
 
+.empty-message {
+  margin-top: 35px;
 
-/* =========================
-   OPEN WORKSPACE
-========================= */
+  padding: 20px;
 
-.workspace {
+  border: 1px solid var(--border);
 
-  padding:
-    5px 0;
-}
+  background: var(--panel);
 
-.workspace-text {
+  border-radius: 16px;
 
-  max-width: 700px;
+  color: var(--muted);
 
-  color:
-    var(--muted);
-
-  line-height:
-    1.8;
-
-  font-size:
-    15px;
-}
-
-.workspace-title {
-
-  font-size:
-    18px;
-
-  margin-bottom:
-    10px;
-
-  font-weight:
-    500;
+  box-shadow: var(--shadow);
 }
 
 
-/* =========================
-   UPLOAD COMPOSER
-========================= */
+/* PAGE HEADER */
 
-.upload-area {
+.page-header {
+  margin-bottom: 30px;
+}
 
-  margin-top:
-    25px;
+.page-header h1 {
+  font-size: 32px;
 
-  border:
-    1px solid var(--border);
+  letter-spacing: -0.7px;
 
-  border-radius:
-    17px;
+  margin-bottom: 8px;
+}
 
-  background:
-    var(--surface);
+.page-header p {
+  color: var(--muted);
 
-  padding:
-    18px;
+  font-size: 15px;
+}
+
+
+/* CARDS */
+
+.card {
+  background: var(--panel);
+
+  border: 1px solid var(--border);
+
+  border-radius: 18px;
+
+  padding: 24px;
+
+  margin-bottom: 18px;
+
+  box-shadow: var(--shadow);
 
   transition:
-    border-color var(--transition),
-    background var(--transition),
-    transform var(--transition);
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
-.upload-area:hover {
-
-  border-color:
-    rgba(255,255,255,0.15);
-
-  background:
-    var(--surface-light);
+.card:hover {
+  transform: translateY(-2px);
 }
 
-.upload-inner {
 
-  min-height:
-    155px;
+/* UPLOAD */
 
-  display:
-    flex;
+.upload-area {
+  border: 2px dashed #c9c9c9;
 
-  flex-direction:
-    column;
+  border-radius: 18px;
 
-  align-items:
-    center;
+  padding: 55px 20px;
 
-  justify-content:
-    center;
+  text-align: center;
 
-  text-align:
-    center;
-
-  border:
-    1px dashed rgba(255,255,255,0.13);
-
-  border-radius:
-    12px;
-
-  padding:
-    25px;
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease;
 }
 
-.upload-inner h2 {
-
-  font-size:
-    17px;
-
-  font-weight:
-    500;
-
-  margin-bottom:
-    8px;
+.upload-area.dragging {
+  border-color: #777;
+  background: #f0f0f0;
 }
 
-.upload-inner p {
+.upload-area h2 {
+  font-size: 21px;
+  margin-bottom: 8px;
+}
 
-  color:
-    var(--muted);
-
-  font-size:
-    13px;
-
-  line-height:
-    1.6;
+.upload-area p {
+  color: var(--muted);
+  font-size: 14px;
 }
 
 .file-input {
+  margin-top: 22px;
 
-  margin-top:
-    18px;
-
-  color:
-    var(--muted);
-
-  font-size:
-    13px;
+  max-width: 100%;
 }
-
-.file-input::file-selector-button {
-
-  background:
-    #34353b;
-
-  color:
-    var(--text);
-
-  border:
-    1px solid var(--border);
-
-  padding:
-    8px 12px;
-
-  margin-right:
-    8px;
-
-  border-radius:
-    8px;
-
-  cursor:
-    pointer;
-}
-
-
-/* =========================
-   BUTTONS
-========================= */
 
 .primary {
+  background: var(--button);
+  color: var(--button-text);
 
-  margin-top:
-    14px;
+  border: none;
 
-  padding:
-    11px 17px;
+  padding: 12px 20px;
 
-  border:
-    none;
+  border-radius: 11px;
 
-  border-radius:
-    9px;
+  font-size: 14px;
+  font-weight: 600;
 
-  background:
-    #e1e1e4;
+  cursor: pointer;
 
-  color:
-    #17181c;
-
-  font-size:
-    13px;
-
-  font-weight:
-    600;
-
-  cursor:
-    pointer;
+  margin-top: 18px;
 
   transition:
-    opacity var(--transition),
-    transform var(--transition);
+    transform 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .primary:hover {
-
-  opacity:
-    0.88;
-
-  transform:
-    translateY(-1px);
-}
-
-.primary:active {
-
-  transform:
-    translateY(1px);
+  transform: translateY(-1px);
 }
 
 .primary:disabled {
-
-  opacity:
-    0.45;
-
-  cursor:
-    not-allowed;
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 
 
-/* =========================
-   STATUS
-========================= */
+/* STATUS */
 
 .status {
+  margin-top: 16px;
 
-  min-height:
-    20px;
+  font-size: 13px;
 
-  margin-top:
-    13px;
+  color: var(--muted);
 
-  color:
-    var(--muted);
-
-  font-size:
-    13px;
-
-  text-align:
-    center;
-}
-
-.status.error {
-
-  color:
-    #d99b9b;
+  min-height: 20px;
 }
 
 .status.success {
+  color: #3f6b4f;
+}
 
-  color:
-    #aeb9b0;
+.status.error {
+  color: #9b3f3f;
 }
 
 
-/* =========================
-   NOTES
-========================= */
-
-.notes-container {
-
-  padding:
-    4px 0;
-}
-
-.notes-text {
-
-  width:
-    100%;
-
-  min-height:
-    390px;
-
-  border:
-    none;
-
-  outline:
-    none;
-
-  resize:
-    vertical;
-
-  background:
-    transparent;
-
-  color:
-    var(--text);
-
-  font-size:
-    15px;
-
-  line-height:
-    1.8;
-
-  padding:
-    10px 0;
-}
-
-.notes-text::placeholder {
-
-  color:
-    var(--muted-dark);
-}
-
-
-/* =========================
-   AUDIO
-========================= */
-
-.audio-controls {
-
-  display:
-    flex;
-
-  gap:
-    8px;
-
-  flex-wrap:
-    wrap;
-
-  margin-top:
-    12px;
-}
-
-.audio-controls button {
-
-  padding:
-    8px 12px;
-
-  border:
-    1px solid var(--border);
-
-  border-radius:
-    8px;
-
-  background:
-    var(--surface);
-
-  color:
-    var(--muted);
-
-  cursor:
-    pointer;
-
-  transition:
-    background var(--transition),
-    color var(--transition);
-}
-
-.audio-controls button:hover {
-
-  background:
-    var(--surface-hover);
-
-  color:
-    var(--text);
-}
-
-
-/* =========================
-   KEY POINTS
-========================= */
-
-.key-points {
-
-  list-style:
-    none;
-
-  padding:
-    0;
-
-  margin-top:
-    15px;
-}
-
-.key-points li {
-
-  padding:
-    11px 0;
-
-  border-bottom:
-    1px solid var(--border);
-
-  color:
-    var(--muted);
-
-  line-height:
-    1.6;
-}
-
-.key-points li:last-child {
-
-  border-bottom:
-    none;
-}
-
-
-/* =========================
-   FLASHCARDS
-========================= */
-
-.flashcard {
-
-  padding:
-    20px 0;
-
-  border-bottom:
-    1px solid var(--border);
-}
-
-.flashcard h2 {
-
-  font-size:
-    16px;
-
-  font-weight:
-    500;
-
-  line-height:
-    1.6;
-}
-
-.flashcard .answer {
-
-  margin-top:
-    12px;
-
-  color:
-    var(--muted);
-
-  line-height:
-    1.7;
-
-  display:
-    none;
-}
-
-
-/* =========================
-   LOADING
-========================= */
+/* LOADING */
 
 .loading {
+  display: none;
 
-  display:
-    none;
+  align-items: center;
+  justify-content: center;
 
-  text-align:
-    center;
+  gap: 9px;
 
-  padding:
-    45px 20px;
+  margin-top: 18px;
 
-  color:
-    var(--muted);
+  color: var(--muted);
 
-  animation:
-    fadeIn 0.35s ease;
+  font-size: 13px;
 }
 
 .loading.active {
-
-  display:
-    block;
+  display: flex;
 }
 
-.loader {
+.dot {
+  width: 6px;
+  height: 6px;
 
-  width:
-    23px;
+  background: #777;
 
-  height:
-    23px;
+  border-radius: 50%;
 
-  margin:
-    0 auto 13px;
+  animation: pulse 1.2s infinite ease-in-out;
+}
 
-  border:
-    2px solid #3a3b41;
+.dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
 
-  border-top-color:
-    #d6d6da;
+.dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
 
-  border-radius:
-    50%;
+@keyframes pulse {
+  0%, 80%, 100% {
+    opacity: 0.25;
+    transform: scale(0.8);
+  }
+
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+/* NOTES */
+
+.notes-content {
+  background: var(--panel);
+
+  border: 1px solid var(--border);
+
+  border-radius: 18px;
+
+  padding: 30px;
+
+  box-shadow: var(--shadow);
+}
+
+.notes-content h2 {
+  font-size: 23px;
+
+  margin-bottom: 18px;
+}
+
+.notes-text {
+  white-space: pre-wrap;
+
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+  font-size: 16px;
+
+  line-height: 1.8;
+
+  color: var(--text);
+}
+
+
+/* KEY POINTS */
+
+.key-points {
+  padding-left: 22px;
+
+  line-height: 1.9;
+}
+
+.key-points li {
+  margin-bottom: 8px;
+}
+
+
+/* FLASHCARDS */
+
+.flashcard {
+  background: var(--panel);
+
+  border: 1px solid var(--border);
+
+  border-radius: 16px;
+
+  padding: 22px;
+
+  margin-bottom: 15px;
+
+  box-shadow: var(--shadow);
+}
+
+.flashcard h3 {
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.answer {
+  display: none;
+
+  margin-top: 15px;
+
+  padding-top: 15px;
+
+  border-top: 1px solid var(--border);
+
+  color: var(--muted);
+
+  line-height: 1.7;
+}
+
+.answer.visible {
+  display: block;
 
   animation:
-    spin 0.8s linear infinite;
+    answerIn 0.3s ease;
 }
 
-@keyframes spin {
-
-  to {
-    transform:
-      rotate(360deg);
-  }
-}
-
-@keyframes fadeIn {
-
+@keyframes answerIn {
   from {
-    opacity:
-      0;
+    opacity: 0;
+    transform: translateY(-5px);
   }
 
   to {
-    opacity:
-      1;
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
 
-/* =========================
-   SETTINGS
-========================= */
+/* PLANNER */
 
-.setting {
+.plan-item {
+  display: flex;
 
-  padding:
-    17px 0;
+  justify-content: space-between;
 
-  border-bottom:
-    1px solid var(--border);
+  gap: 20px;
+
+  padding: 16px 0;
+
+  border-bottom: 1px solid var(--border);
 }
 
-.setting:last-child {
-
-  border-bottom:
-    none;
+.plan-item:last-child {
+  border-bottom: none;
 }
 
-.setting h3 {
-
-  font-size:
-    14px;
-
-  font-weight:
-    500;
-
-  margin-bottom:
-    6px;
-}
-
-.setting p {
-
-  color:
-    var(--muted);
-
-  font-size:
-    13px;
-
-  line-height:
-    1.6;
+.small {
+  color: var(--muted);
+  font-size: 13px;
 }
 
 
-/* =========================
-   FOOTER
-========================= */
+/* FOOTER */
 
 footer {
+  text-align: center;
 
-  padding:
-    35px 0;
+  color: #888;
 
-  color:
-    var(--muted-dark);
+  padding: 30px;
 
-  font-size:
-    11px;
+  font-size: 12px;
 }
 
 
-/* =========================
-   MOBILE
-========================= */
+/* MOBILE */
 
-@media (max-width: 760px) {
-
-  :root {
-    --header-height: 66px;
-  }
+@media (max-width: 650px) {
 
   header {
-    padding:
-      0 14px;
-  }
-
-  .logo {
-    font-size:
-      17px;
-  }
-
-  .tagline {
-    display:
-      none;
+    height: 68px;
+    padding: 0 14px;
   }
 
   .sidebar {
-
-    width:
-      min(245px, 82vw);
-
-    box-shadow:
-      12px 0 40px rgba(0,0,0,0.3);
-  }
-
-  .sidebar.hidden {
-
-    transform:
-      translateX(-100%);
+    top: 68px;
+    width: 235px;
   }
 
   main {
-
-    margin-left:
-      0;
-  }
-
-  main.expanded {
-
-    margin-left:
-      0;
+    padding-top: 68px;
   }
 
   .content {
-
-    padding:
-      20px 17px 60px;
+    width: calc(100% - 24px);
+    padding-top: 35px;
   }
 
-  .hero {
-
-    padding-top:
-      25px;
+  .welcome {
+    min-height: 60vh;
   }
 
-  .hero h1 {
-
-    font-size:
-      25px;
+  .welcome h1 {
+    font-size: 34px;
   }
 
-}
+  .card,
+  .notes-content {
+    padding: 19px;
+  }
 
-
-/* =========================
-   SIDEBAR OVERLAY
-========================= */
-
-.overlay {
-
-  position:
-    fixed;
-
-  inset:
-    0;
-
-  z-index:
-    850;
-
-  background:
-    rgba(0,0,0,0.35);
-
-  backdrop-filter:
-    blur(2px);
-
-  opacity:
-    0;
-
-  pointer-events:
-    none;
-
-  transition:
-    opacity var(--transition);
-}
-
-.overlay.active {
-
-  opacity:
-    1;
-
-  pointer-events:
-    auto;
-}
-
-@media (min-width: 761px) {
-
-  .overlay {
-    display:
-      none;
+  .upload-area {
+    padding: 40px 15px;
   }
 
 }
-
 </style>
 </head>
 
 
 <body>
 
-
-<!-- HEADER -->
-
 <header>
 
   <button
     class="menu-button"
     onclick="toggleSidebar()"
-    aria-label="Toggle navigation">
+    aria-label="Open menu"
+    id="menuButton">
 
     <div class="menu-icon">
-
       <span></span>
       <span></span>
       <span></span>
-
     </div>
 
   </button>
 
-  <div class="logo">
-    MENTALIST
-  </div>
+  <div class="brand">
 
-  <div class="tagline">
-    Observe, Interpret, Understand
+    <div class="logo">
+      MENTALIST
+    </div>
+
+    <div class="tagline">
+      Observe, Interpret, Understand
+    </div>
+
   </div>
 
 </header>
 
-
-<!-- OVERLAY -->
-
-<div
-  class="overlay"
-  id="overlay"
-  onclick="toggleSidebar()">
-</div>
-
-
-<!-- SIDEBAR -->
 
 <aside
   class="sidebar"
@@ -1170,438 +761,344 @@ footer {
   </div>
 
   <button
-    class="active"
+    class="side-button active"
     onclick="showPage('dashboard', this)">
-
     Home
-
   </button>
 
   <button
+    class="side-button"
     onclick="showPage('upload', this)">
-
-    Analyze
-
+    Analyze material
   </button>
 
   <button
+    class="side-button"
     onclick="showPage('notes', this)">
-
     Notes
-
   </button>
 
   <button
+    class="side-button"
     onclick="showPage('flashcards', this)">
-
     Flashcards
-
   </button>
 
   <button
+    class="side-button"
     onclick="showPage('planner', this)">
-
-    Study Plan
-
+    Study plan
   </button>
 
-  <button
-    onclick="showPage('settings', this)">
+  <div class="side-divider"></div>
 
+  <div class="sidebar-title">
     Settings
+  </div>
 
+  <button
+    class="side-button"
+    onclick="showSettings()">
+    Settings
   </button>
 
 </aside>
 
 
-<!-- MAIN -->
+<main>
 
-<main id="main">
-
-<div class="content">
+  <div class="content">
 
 
-<!-- HOME -->
+    <!-- HOME -->
 
-<section
-  id="dashboard"
-  class="active">
+    <section
+      id="dashboard"
+      class="active">
 
-  <div class="hero">
+      <div class="welcome">
 
-    <h1>
-      Welcome to Mentalist.
-    </h1>
-
-    <p>
-      A quiet workspace for understanding,
-      remembering and mastering what you study.
-    </p>
-
-  </div>
-
-
-  <div class="workspace">
-
-    <div class="workspace-title">
-      Your workspace is ready.
-    </div>
-
-    <p class="workspace-text">
-
-      Upload your study material whenever you're ready.
-      Mentalist will analyze it and turn it into
-      clear notes, key points and flashcards.
-
-    </p>
-
-
-    <div class="upload-area">
-
-      <div class="upload-inner">
-
-        <h2>
-          Start with your study material
-        </h2>
+        <h1>
+          Welcome to Mentalist.
+        </h1>
 
         <p>
-          Select a TXT file to begin an analysis.
+          Your study space for understanding,
+          remembering and mastering.
         </p>
 
-        <button
-          class="primary"
-          onclick="showPage('upload')">
+        <div class="empty-message">
 
-          Analyze Material
+          <strong>
+            Your workspace is empty.
+          </strong>
 
-        </button>
+          <p style="margin-top:8px;">
+            Upload your study material to begin.
+            Mentalist will analyze the material
+            and create study resources for you.
+          </p>
 
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- ANALYZE -->
-
-<section
-  id="upload">
-
-  <div class="hero">
-
-    <h1>
-      Analyze Material
-    </h1>
-
-    <p>
-      Give Mentalist something to understand.
-    </p>
-
-  </div>
-
-
-  <div class="workspace">
-
-    <div class="upload-area">
-
-      <div class="upload-inner">
-
-        <h2>
-          Select a study file
-        </h2>
-
-        <p>
-          TXT files are currently supported.
-        </p>
-
-        <input
-          class="file-input"
-          type="file"
-          id="fileInput"
-accept=".txt,.pdf,.plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
-
-        <button
-          class="primary"
-          id="analyzeButton"
-          onclick="processFile()">
-
-          Analyze Material
-
-        </button>
-
-        <div
-          id="fileStatus"
-          class="status">
         </div>
 
       </div>
 
-    </div>
+    </section>
 
 
-    <div
-      id="loading"
-      class="loading">
+    <!-- UPLOAD -->
 
-      <div class="loader"></div>
+    <section id="upload">
 
-      <p>
-        Mentalist is carefully analyzing your material.
-      </p>
+      <div class="page-header">
 
-    </div>
+        <h1>
+          Analyze material
+        </h1>
+
+        <p>
+          Upload your study material and let
+          Mentalist turn it into something easier
+          to understand.
+        </p>
+
+      </div>
+
+
+      <div class="card">
+
+        <div
+          class="upload-area"
+          id="uploadArea">
+
+          <h2>
+            Upload your material
+          </h2>
+
+          <p>
+            TXT, PDF or DOCX files
+          </p>
+
+          <input
+            class="file-input"
+            type="file"
+            id="fileInput"
+            accept=".txt,.pdf,.docx,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+
+          <br>
+
+          <button
+            class="primary"
+            id="analyzeButton"
+            onclick="processFile()">
+
+            Analyze material
+
+          </button>
+
+
+          <div
+            class="loading"
+            id="loading">
+
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+
+            <span>
+              Mentalist is thinking...
+            </span>
+
+          </div>
+
+
+          <p
+            id="fileStatus"
+            class="status">
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- NOTES -->
+
+    <section id="notes">
+
+      <div class="page-header">
+
+        <h1>
+          Notes
+        </h1>
+
+        <p>
+          Simplified notes generated from your
+          study material.
+        </p>
+
+      </div>
+
+
+      <div
+        class="notes-content"
+        id="notesOutput">
+
+        <p class="small">
+          Upload and analyze a file to generate
+          your notes.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- FLASHCARDS -->
+
+    <section id="flashcards">
+
+      <div class="page-header">
+
+        <h1>
+          Flashcards
+        </h1>
+
+        <p>
+          Test your memory instead of simply
+          rereading your material.
+        </p>
+
+      </div>
+
+
+      <div id="flashcardOutput">
+
+        <div class="card">
+
+          <p class="small">
+            Analyze some study material first
+            and your flashcards will appear here.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- PLANNER -->
+
+    <section id="planner">
+
+      <div class="page-header">
+
+        <h1>
+          Study plan
+        </h1>
+
+        <p>
+          Organize your study sessions.
+        </p>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="plan-item">
+          <span>Study session</span>
+          <span class="small">Add a subject</span>
+        </div>
+
+        <div class="plan-item">
+          <span>Review</span>
+          <span class="small">Add a session</span>
+        </div>
+
+        <div class="plan-item">
+          <span>Flashcards</span>
+          <span class="small">Add a session</span>
+        </div>
+
+        <p
+          class="small"
+          style="margin-top:18px;">
+
+          Planner customization will be added
+          in a future version.
+
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- SETTINGS -->
+
+    <section id="settings">
+
+      <div class="page-header">
+
+        <h1>
+          Settings
+        </h1>
+
+        <p>
+          Customize your Mentalist experience.
+        </p>
+
+      </div>
+
+
+      <div class="card">
+
+        <h2>
+          Appearance
+        </h2>
+
+        <p
+          class="small"
+          style="margin-top:8px;">
+
+          Theme customization is coming soon.
+
+        </p>
+
+      </div>
+
+    </section>
+
 
   </div>
 
-</section>
 
-
-<!-- NOTES -->
-
-<section
-  id="notes">
-
-  <div class="hero">
-
-    <h1>
-      Notes
-    </h1>
-
-    <p>
-      Your generated notes will appear here.
-    </p>
-
-  </div>
-
-
-  <div class="notes-container">
-
-    <textarea
-      id="notesText"
-      class="notes-text"
-      placeholder="Analyze a study file to generate notes.">
-    </textarea>
-
-
-    <div class="audio-controls">
-
-      <button onclick="speakNotes()">
-        Play
-      </button>
-
-      <button onclick="pauseSpeech()">
-        Pause
-      </button>
-
-      <button onclick="resumeSpeech()">
-        Resume
-      </button>
-
-      <button onclick="stopSpeech()">
-        Stop
-      </button>
-
-    </div>
-
-
-    <div style="margin-top:40px;">
-
-      <h2
-        style="
-          font-size:18px;
-          font-weight:500;
-        ">
-
-        Key Points
-
-      </h2>
-
-      <ul
-        id="keyPoints"
-        class="key-points">
-      </ul>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- FLASHCARDS -->
-
-<section
-  id="flashcards">
-
-  <div class="hero">
-
-    <h1>
-      Flashcards
-    </h1>
-
-    <p>
-      Test your understanding instead of
-      simply rereading.
-    </p>
-
-  </div>
-
-
-  <div
-    id="flashcardsContainer">
-
-    <p
-      class="workspace-text">
-
-      Analyze study material to generate
-      personalized flashcards.
-
-    </p>
-
-  </div>
-
-</section>
-
-
-<!-- PLANNER -->
-
-<section
-  id="planner">
-
-  <div class="hero">
-
-    <h1>
-      Study Plan
-    </h1>
-
-    <p>
-      Your timetable. Your rules.
-    </p>
-
-  </div>
-
-
-  <div class="workspace">
-
-    <p class="workspace-text">
-
-      Your study plan is currently empty.
-      Planning tools can be added here next.
-
-    </p>
-
-  </div>
-
-</section>
-
-
-<!-- SETTINGS -->
-
-<section
-  id="settings">
-
-  <div class="hero">
-
-    <h1>
-      Settings
-    </h1>
-
-    <p>
-      Manage your Mentalist workspace.
-    </p>
-
-  </div>
-
-
-  <div class="workspace">
-
-    <div class="setting">
-
-      <h3>
-        Interface
-      </h3>
-
-      <p>
-        Mentalist uses a dark neutral interface
-        designed to keep attention on your study material.
-      </p>
-
-    </div>
-
-
-    <div class="setting">
-
-      <h3>
-        AI Analysis
-      </h3>
-
-      <p>
-        Your uploaded study material is sent through
-        the secure Mentalist API for analysis.
-      </p>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<footer>
-  Mentalist — Observe, Interpret, Understand
-</footer>
-
-
-</div>
+  <footer>
+    Mentalist — Observe, Interpret, Understand
+  </footer>
 
 </main>
 
 
 <script>
 
-
-/* =========================
-   SIDEBAR
-========================= */
-
-const sidebar =
-  document.getElementById("sidebar");
-
-const main =
-  document.getElementById("main");
-
-const overlay =
-  document.getElementById("overlay");
-
+/* SIDEBAR */
 
 function toggleSidebar() {
 
-  sidebar.classList.toggle("hidden");
+  const sidebar =
+    document.getElementById("sidebar");
 
-  const isMobile =
-    window.innerWidth <= 760;
-
-
-  if (!isMobile) {
-
-    main.classList.toggle("expanded");
-
-  } else {
-
-    overlay.classList.toggle("active");
-
-  }
+  sidebar.classList.toggle("open");
 
 }
 
 
-/* =========================
-   PAGE NAVIGATION
-========================= */
+/* PAGE NAVIGATION */
 
 function showPage(page, button) {
 
@@ -1617,7 +1114,6 @@ function showPage(page, button) {
   const target =
     document.getElementById(page);
 
-
   if (target) {
 
     target.classList.add("active");
@@ -1626,10 +1122,10 @@ function showPage(page, button) {
 
 
   document
-    .querySelectorAll(".sidebar button")
-    .forEach(btn => {
+    .querySelectorAll(".side-button")
+    .forEach(item => {
 
-      btn.classList.remove("active");
+      item.classList.remove("active");
 
     });
 
@@ -1642,30 +1138,27 @@ function showPage(page, button) {
 
 
   window.scrollTo({
-
     top: 0,
-
     behavior: "smooth"
-
   });
 
 
-  if (window.innerWidth <= 760) {
-
-    sidebar.classList.add("hidden");
-
-    overlay.classList.remove("active");
-
-  }
+  document
+    .getElementById("sidebar")
+    .classList.remove("open");
 
 }
 
 
-/* =========================
-   FILE ANALYSIS
-========================= */
+function showSettings() {
 
-     
+  showPage("settings");
+
+}
+
+
+/* FILE ANALYSIS */
+
 async function processFile() {
 
   const fileInput =
@@ -1680,36 +1173,21 @@ async function processFile() {
   const loading =
     document.getElementById("loading");
 
+
   const file =
     fileInput.files[0];
 
 
   if (!file) {
 
-    status.className = "status error";
+    status.className =
+      "status error";
 
     status.innerText =
       "Please select a file first.";
 
     return;
-  }
 
-
-  const allowedTypes = [
-    "text/plain",
-    "application/pdf",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-  ];
-
-
-  if (!allowedTypes.includes(file.type)) {
-
-    status.className = "status error";
-
-    status.innerText =
-      "Please select a TXT, PDF, or DOCX file.";
-
-    return;
   }
 
 
@@ -1717,7 +1195,8 @@ async function processFile() {
 
     button.disabled = true;
 
-    status.className = "status";
+    status.className =
+      "status";
 
     status.innerText =
       "Reading your file...";
@@ -1744,15 +1223,18 @@ async function processFile() {
       i += chunkSize
     ) {
 
-      binary += String.fromCharCode(
-        ...bytes.subarray(
+      const chunk =
+        bytes.subarray(
           i,
           Math.min(
             i + chunkSize,
             bytes.length
           )
-        )
-      );
+        );
+
+
+      binary +=
+        String.fromCharCode(...chunk);
 
     }
 
@@ -1762,7 +1244,7 @@ async function processFile() {
 
 
     status.innerText =
-      "Extracting the text...";
+      "Extracting text...";
 
 
     const extractResponse =
@@ -1813,7 +1295,7 @@ async function processFile() {
     if (!text || !text.trim()) {
 
       throw new Error(
-        "No readable text was found in the file."
+        "No readable text was found."
       );
 
     }
@@ -1829,29 +1311,41 @@ You are Mentalist, an AI study assistant.
 
 Analyze the study material below.
 
-Create a useful study resource for the student.
+IMPORTANT:
+Do not assume the subject is Biology.
+Identify the actual subject from the material.
 
-Return your response using exactly these three sections:
+Create three study resources.
 
-NOTES:
-Write clear, simplified notes that explain the material accurately.
+SECTION 1: NOTES
+
+Create clear, accurate, easy-to-understand notes.
 Use headings and bullet points where useful.
 
-KEY POINTS:
-Provide the most important facts or concepts as bullet points.
+SECTION 2: KEY POINTS
 
-FLASHCARDS:
+List the most important concepts and facts.
+
+SECTION 3: FLASHCARDS
+
 Create 5 useful flashcards.
 
-For each flashcard use:
+Use exactly this format:
 
-Q: question
-A: answer
+FLASHCARD 1
+Q: Question
+A: Answer
 
-Do not assume the material is Biology.
-Analyze whatever subject the uploaded material actually contains.
+FLASHCARD 2
+Q: Question
+A: Answer
 
-Study material:
+Continue until FLASHCARD 5.
+
+Do not invent information that is not supported
+by the study material.
+
+STUDY MATERIAL:
 
 ${text}
 
@@ -1872,14 +1366,11 @@ ${text}
 
           body:
             JSON.stringify({
-
-              message:
-                prompt
-
+              message: prompt
             })
 
-          }
-        );
+        }
+      );
 
 
     const data =
@@ -1916,10 +1407,7 @@ ${text}
     status.innerText =
       "Analysis complete.";
 
-
-    loading.classList.remove(
-      "active"
-    );
+    loading.classList.remove("active");
 
 
     showPage("notes");
@@ -1930,9 +1418,7 @@ ${text}
     console.error(error);
 
 
-    loading.classList.remove(
-      "active"
-    );
+    loading.classList.remove("active");
 
 
     status.className =
@@ -1940,52 +1426,7 @@ ${text}
 
     status.innerText =
       error.message ||
-      "Something went wrong while analyzing the file.";
-
-
-  } finally {
-
-    button.disabled = false;
-
-  }
-
-}
-    parseAIResponse(
-      data.answer
-    );
-
-
-    status.className =
-      "status success";
-
-    status.innerText =
-      "Analysis complete.";
-
-
-    loading.classList.remove(
-      "active"
-    );
-
-
-    showPage("notes");
-
-
-  } catch (error) {
-
-    console.error(error);
-
-
-    loading.classList.remove(
-      "active"
-    );
-
-
-    status.className =
-      "status error";
-
-    status.innerText =
-      error.message ||
-      "Something went wrong while analyzing the file.";
+      "Something went wrong.";
 
   } finally {
 
@@ -1996,34 +1437,33 @@ ${text}
 }
 
 
-/* =========================
-   AI RESPONSE PARSER
-========================= */
+/* AI RESPONSE PARSER */
 
 function parseAIResponse(answer) {
 
-  let notes = "";
+  const notesOutput =
+    document.getElementById("notesOutput");
 
-  let keyPoints = [];
+  const flashcardOutput =
+    document.getElementById("flashcardOutput");
 
-  let flashcards = [];
+
+  let notes =
+    answer;
+
+  let keyPoints =
+    "";
 
 
   const notesMatch =
     answer.match(
-      /NOTES:\s*([\s\S]*?)(?=\n\s*KEY POINTS:|\n\s*FLASHCARDS:|$)/i
+      /NOTES:\s*([\s\S]*?)(?=KEY POINTS:|FLASHCARDS:|$)/i
     );
 
 
-  const keyPointsMatch =
+  const keyMatch =
     answer.match(
-      /KEY POINTS:\s*([\s\S]*?)(?=\n\s*FLASHCARDS:|$)/i
-    );
-
-
-  const flashcardsMatch =
-    answer.match(
-      /FLASHCARDS:\s*([\s\S]*)/i
+      /KEY POINTS:\s*([\s\S]*?)(?=FLASHCARDS:|$)/i
     );
 
 
@@ -2032,42 +1472,36 @@ function parseAIResponse(answer) {
     notes =
       notesMatch[1].trim();
 
-  } else {
-
-    notes =
-      answer.trim();
-
   }
 
 
-  if (keyPointsMatch) {
+  if (keyMatch) {
 
     keyPoints =
-      keyPointsMatch[1]
-        .split("\n")
-        .map(line =>
-          line
-            .replace(
-              /^[-*•]\s*/,
-              ""
-            )
-            .trim()
-        )
-        .filter(Boolean);
+      keyMatch[1].trim();
 
   }
 
 
-  if (flashcardsMatch) {
+  let flashcards =
+    [];
 
-    const raw =
-      flashcardsMatch[1]
-        .trim();
+
+  const flashcardSection =
+    answer.match(
+      /FLASHCARDS:\s*([\s\S]*)/i
+    );
+
+
+  if (flashcardSection) {
+
+    const section =
+      flashcardSection[1];
 
 
     const matches =
-      raw.match(
-        /Q:\s*(.*?)\s*A:\s*([\s\S]*?)(?=\n\s*Q:|$)/gi
+      section.match(
+        /Q:\s*([\s\S]*?)\s*A:\s*([\s\S]*?)(?=\s*FLASHCARD|\s*$)/gi
       );
 
 
@@ -2075,30 +1509,21 @@ function parseAIResponse(answer) {
 
       matches.forEach(item => {
 
-        const question =
+        const match =
           item.match(
-            /Q:\s*(.*?)(?=\s*A:)/is
+            /Q:\s*([\s\S]*?)\s*A:\s*([\s\S]*)/i
           );
 
 
-        const answerMatch =
-          item.match(
-            /A:\s*([\s\S]*)/i
-          );
-
-
-        if (
-          question &&
-          answerMatch
-        ) {
+        if (match) {
 
           flashcards.push({
 
             question:
-              question[1].trim(),
+              match[1].trim(),
 
             answer:
-              answerMatch[1].trim()
+              match[2].trim()
 
           });
 
@@ -2111,114 +1536,179 @@ function parseAIResponse(answer) {
   }
 
 
-  document.getElementById(
-    "notesText"
-  ).value = notes;
+  notesOutput.innerHTML = "";
 
 
-  const keyPointsContainer =
-    document.getElementById(
-      "keyPoints"
-    );
+  const notesCard =
+    document.createElement("div");
+
+  notesCard.className =
+    "notes-content";
 
 
-  keyPointsContainer.innerHTML =
-    "";
+  const notesTitle =
+    document.createElement("h2");
+
+  notesTitle.innerText =
+    "Simplified Notes";
 
 
-  keyPoints.forEach(point => {
+  const notesBody =
+    document.createElement("div");
 
-    const li =
-      document.createElement(
-        "li"
-      );
+  notesBody.className =
+    "notes-text";
 
-    li.textContent =
-      point;
-
-    keyPointsContainer.appendChild(
-      li
-    );
-
-  });
+  notesBody.innerText =
+    notes;
 
 
-  renderFlashcards(
-    flashcards
+  notesCard.appendChild(
+    notesTitle
   );
 
-}
+  notesCard.appendChild(
+    notesBody
+  );
 
 
-/* =========================
-   FLASHCARDS
-========================= */
+  notesOutput.appendChild(
+    notesCard
+  );
 
-function renderFlashcards(cards) {
 
-  const container =
-    document.getElementById(
-      "flashcardsContainer"
+  if (keyPoints) {
+
+    const keyCard =
+      document.createElement("div");
+
+    keyCard.className =
+      "card";
+
+
+    const title =
+      document.createElement("h2");
+
+    title.innerText =
+      "Key Points";
+
+
+    const list =
+      document.createElement("div");
+
+    list.className =
+      "notes-text";
+
+    list.style.marginTop =
+      "15px";
+
+    list.innerText =
+      keyPoints;
+
+
+    keyCard.appendChild(title);
+
+    keyCard.appendChild(list);
+
+    notesOutput.appendChild(
+      keyCard
     );
 
+  }
 
-  if (!cards.length) {
 
-    container.innerHTML = `
-      <p class="workspace-text">
-        No flashcards were generated.
-        Try analyzing the material again.
-      </p>
-    `;
+  flashcardOutput.innerHTML = "";
+
+
+  if (flashcards.length === 0) {
+
+    const empty =
+      document.createElement("div");
+
+    empty.className =
+      "card";
+
+    empty.innerText =
+      "No flashcards were generated.";
+
+    flashcardOutput.appendChild(
+      empty
+    );
 
     return;
 
   }
 
 
-  container.innerHTML =
-    "";
-
-
-  cards.forEach(
+  flashcards.forEach(
     (card, index) => {
 
       const element =
-        document.createElement(
-          "div"
-        );
-
+        document.createElement("div");
 
       element.className =
         "flashcard";
 
 
-      element.innerHTML = `
+      const question =
+        document.createElement("h3");
 
-        <h2>
-          ${escapeHTML(card.question)}
-        </h2>
-
-        <div
-          class="answer"
-          id="answer-${index}">
-
-          ${escapeHTML(card.answer)}
-
-        </div>
-
-        <button
-          class="primary"
-          onclick="toggleAnswer('answer-${index}')">
-
-          Show Answer
-
-        </button>
-
-      `;
+      question.innerText =
+        card.question;
 
 
-      container.appendChild(
+      const answer =
+        document.createElement("div");
+
+      answer.className =
+        "answer";
+
+      answer.innerText =
+        card.answer;
+
+
+      const button =
+        document.createElement("button");
+
+      button.className =
+        "primary";
+
+      button.innerText =
+        "Show answer";
+
+
+      button.onclick =
+        function() {
+
+          answer.classList.toggle(
+            "visible"
+          );
+
+
+          button.innerText =
+            answer.classList.contains(
+              "visible"
+            )
+              ? "Hide answer"
+              : "Show answer";
+
+        };
+
+
+      element.appendChild(
+        question
+      );
+
+      element.appendChild(
+        answer
+      );
+
+      element.appendChild(
+        button
+      );
+
+
+      flashcardOutput.appendChild(
         element
       );
 
@@ -2228,159 +1718,60 @@ function renderFlashcards(cards) {
 }
 
 
-/* =========================
-   SAFE HTML
-========================= */
+/* DRAG AND DROP */
 
-function escapeHTML(text) {
+const uploadArea =
+  document.getElementById(
+    "uploadArea"
+  );
 
-  const div =
-    document.createElement(
-      "div"
+
+uploadArea.addEventListener(
+  "dragover",
+  event => {
+
+    event.preventDefault();
+
+    uploadArea.classList.add(
+      "dragging"
     );
-
-  div.textContent =
-    text;
-
-  return div.innerHTML;
-
-}
-
-
-/* =========================
-   FLASHCARD ANSWERS
-========================= */
-
-function toggleAnswer(id) {
-
-  const answer =
-    document.getElementById(id);
-
-
-  if (!answer) return;
-
-
-  if (
-    answer.style.display ===
-    "block"
-  ) {
-
-    answer.style.display =
-      "none";
-
-  } else {
-
-    answer.style.display =
-      "block";
 
   }
-
-}
-
-
-/* =========================
-   TEXT TO SPEECH
-========================= */
-
-function speakNotes() {
-
-  const text =
-    document.getElementById(
-      "notesText"
-    ).value;
+);
 
 
-  if (!text.trim()) return;
+uploadArea.addEventListener(
+  "dragleave",
+  () => {
+
+    uploadArea.classList.remove(
+      "dragging"
+    );
+
+  }
+);
 
 
-  speechSynthesis.cancel();
+uploadArea.addEventListener(
+  "drop",
+  event => {
 
+    event.preventDefault();
 
-  const speech =
-    new SpeechSynthesisUtterance(
-      text
+    uploadArea.classList.remove(
+      "dragging"
     );
 
 
-  speech.rate =
-    0.9;
-
-  speech.pitch =
-    1;
+    const files =
+      event.dataTransfer.files;
 
 
-  speechSynthesis.speak(
-    speech
-  );
+    if (files.length) {
 
-}
-
-
-function pauseSpeech() {
-
-  speechSynthesis.pause();
-
-}
-
-
-function resumeSpeech() {
-
-  speechSynthesis.resume();
-
-}
-
-
-function stopSpeech() {
-
-  speechSynthesis.cancel();
-
-}
-
-
-/* =========================
-   INITIAL STATE
-========================= */
-
-if (window.innerWidth <= 760) {
-
-  sidebar.classList.add(
-    "hidden"
-  );
-
-}
-
-
-/* =========================
-   RESIZE HANDLING
-========================= */
-
-window.addEventListener(
-  "resize",
-  () => {
-
-    if (window.innerWidth <= 760) {
-
-      sidebar.classList.add(
-        "hidden"
-      );
-
-      main.classList.remove(
-        "expanded"
-      );
-
-      overlay.classList.remove(
-        "active"
-      );
-
-    } else {
-
-      sidebar.classList.remove(
-        "hidden"
-      );
-
-      overlay.classList.remove(
-        "active"
-      );
+      document.getElementById(
+        "fileInput"
+      ).files = files;
 
     }
 
