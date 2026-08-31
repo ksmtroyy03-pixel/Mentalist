@@ -1370,50 +1370,69 @@ async function processFile() {
 
 
     const prompt = `
-
 You are Mentalist, an AI study assistant.
 
 Analyze the study material below.
 
-IMPORTANT:
-Do not assume the subject is Biology.
-Identify the actual subject from the material.
+First identify the actual subject. Do NOT assume the subject is Biology.
 
-Create three study resources.
+Return your response using EXACTLY these three section headings:
 
-SECTION 1: NOTES
+NOTES
 
-Create clear, accurate, easy-to-understand notes.
-Use headings and bullet points where useful.
+Write clear, concise, easy-to-understand study notes.
 
-SECTION 2: KEY POINTS
+Break the notes into short sections with headings.
 
-List the most important concepts and facts.
+Do not create one enormous paragraph.
 
-SECTION 3: FLASHCARDS
+Keep each section reasonably short.
 
-Create 5 useful flashcards.
+KEY POINTS
 
-Use exactly this format:
+Give 5 to 10 of the most important points from the material.
+
+Use one point per line.
+
+FLASHCARDS
+
+Create exactly 5 flashcards.
+
+Use EXACTLY this format:
 
 FLASHCARD 1
-Q: Question
-A: Answer
+Q: [question]
+A: [answer]
 
 FLASHCARD 2
-Q: Question
-A: Answer
+Q: [question]
+A: [answer]
 
-Continue until FLASHCARD 5.
+FLASHCARD 3
+Q: [question]
+A: [answer]
 
-Do not invent information that is not supported
-by the study material.
+FLASHCARD 4
+Q: [question]
+A: [answer]
+
+FLASHCARD 5
+Q: [question]
+A: [answer]
+
+Do not put flashcards anywhere inside the NOTES section.
+
+Do not put key points inside the NOTES section.
+
+Do not invent information.
+
+Only use information supported by the study material.
 
 STUDY MATERIAL:
 
 ${text}
 
-`;
+';
 
 
     const aiResponse =
@@ -1500,7 +1519,6 @@ ${text}
 
 }
 
-
 /* AI RESPONSE PARSER */
 
 function parseAIResponse(answer) {
@@ -1515,37 +1533,37 @@ function parseAIResponse(answer) {
     document.getElementById("flashcardOutput");
 
 
-  let notes = answer;
-  let keyPoints = "";
-
+  /*
+    Find the three main sections.
+  */
 
   const notesMatch =
     answer.match(
-      /NOTES:\s*([\s\S]*?)(?=KEY POINTS:|FLASHCARDS:|$)/i
+      /(?:SECTION\s*1:\s*)?NOTES\s*([\s\S]*?)(?=(?:SECTION\s*2:\s*)?KEY POINTS|(?:SECTION\s*3:\s*)?FLASHCARDS|$)/i
     );
 
 
-  const keyMatch =
+  const keyPointsMatch =
     answer.match(
-      /KEY POINTS:\s*([\s\S]*?)(?=FLASHCARDS:|$)/i
+      /(?:SECTION\s*2:\s*)?KEY POINTS\s*([\s\S]*?)(?=(?:SECTION\s*3:\s*)?FLASHCARDS|$)/i
     );
 
 
-  if (notesMatch) {
-    notes =
-      notesMatch[1].trim();
-  }
-
-
-  if (keyMatch) {
-    keyPoints =
-      keyMatch[1].trim();
-  }
+  const flashcardsMatch =
+    answer.match(
+      /(?:SECTION\s*3:\s*)?FLASHCARDS\s*([\s\S]*)/i
+    );
 
 
   /*
     NOTES
   */
+
+  let notes =
+    notesMatch
+      ? notesMatch[1].trim()
+      : answer.trim();
+
 
   notesOutput.innerText =
     notes;
@@ -1555,9 +1573,14 @@ function parseAIResponse(answer) {
     KEY POINTS
   */
 
+  let keyPoints =
+    keyPointsMatch
+      ? keyPointsMatch[1].trim()
+      : "No key points were generated.";
+
+
   keyPointsOutput.innerText =
-    keyPoints ||
-    "No key points were generated.";
+    keyPoints;
 
 
   /*
@@ -1567,136 +1590,313 @@ function parseAIResponse(answer) {
   flashcardOutput.innerHTML = "";
 
 
-  const flashcardSection =
-    answer.match(
-      /FLASHCARDS:\s*([\s\S]*)/i
-    );
-
-
-  if (!flashcardSection) {
+  if (!flashcardsMatch) {
 
     flashcardOutput.innerHTML =
       '<div class="card"><p class="small">No flashcards were generated.</p></div>';
 
     return;
+
   }
 
 
-  const section =
-    flashcardSection[1];
+  const flashcardText =
+    flashcardsMatch[1];
 
 
-  const matches =
-    section.match(
-      /Q:\s*([\s\S]*?)\s*A:\s*([\s\S]*?)(?=\s*FLASHCARD|\s*$)/gi
-    );
+  /*
+    Find every Q/A pair.
+
+    This accepts:
+    FLASHCARD 1
+    Q: ...
+    A: ...
+
+    FLASHCARD 2
+    Q: ...
+    A: ...
+  */
+
+  const flashcardPattern =
+    /FLASHCARD\s*\d+\s*[\r\n]+Q:\s*([\s\S]*?)\s*A:\s*([\s\S]*?)(?=\s*FLASHCARD\s*\d+|$)/gi;
 
 
-  if (!matches || matches.length === 0) {
+  let match;
 
-    flashcardOutput.innerHTML =
-      '<div class="card"><p class="small">No flashcards were generated.</p></div>';
-
-    return;
-  }
+  let count = 0;
 
 
-  matches.forEach(
-    (item, index) => {
+  while (
+    (match =
+      flashcardPattern.exec(
+        flashcardText
+      )) !== null
+  ) {
 
-      const match =
-        item.match(
-          /Q:\s*([\s\S]*?)\s*A:\s*([\s\S]*)/i
+    const question =
+      match[1].trim();
+
+
+    const answerText =
+      match[2].trim();
+
+
+    if (!question || !answerText) {
+      continue;
+    }
+
+
+    count++;
+
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "flashcard";
+
+
+    const questionElement =
+      document.createElement("h3");
+
+    questionElement.innerText =
+      question;
+
+
+    const answerElement =
+      document.createElement("div");
+
+    answerElement.className =
+      "answer";
+
+    answerElement.innerText =
+      answerText;
+
+
+    const button =
+      document.createElement("button");
+
+    button.className =
+      "primary";
+
+    button.innerText =
+      "Show answer";
+
+
+    button.onclick =
+      function() {
+
+        answerElement.classList.toggle(
+          "visible"
         );
 
 
-      if (!match) {
-        return;
-      }
-
-
-      const question =
-        match[1].trim();
-
-
-      const answerText =
-        match[2].trim();
-
-
-      const card =
-        document.createElement("div");
-
-      card.className =
-        "flashcard";
-
-
-      const questionElement =
-        document.createElement("h3");
-
-      questionElement.innerText =
-        question;
-
-
-      const answerElement =
-        document.createElement("div");
-
-      answerElement.className =
-        "answer";
-
-      answerElement.innerText =
-        answerText;
-
-
-      const button =
-        document.createElement("button");
-
-      button.className =
-        "primary";
-
-      button.innerText =
-        "Show answer";
-
-
-      button.onclick =
-        function() {
-
-          answerElement.classList.toggle(
+        if (
+          answerElement.classList.contains(
             "visible"
-          );
-
+          )
+        ) {
 
           button.innerText =
-            answerElement.classList.contains(
-              "visible"
-            )
-              ? "Hide answer"
-              : "Show answer";
+            "Hide answer";
 
-        };
+        } else {
 
+          button.innerText =
+            "Show answer";
 
-      card.appendChild(
-        questionElement
-      );
+        }
 
-      card.appendChild(
-        answerElement
-      );
-
-      card.appendChild(
-        button
-      );
+      };
 
 
-      flashcardOutput.appendChild(
-        card
-      );
+    card.appendChild(
+      questionElement
+    );
+
+    card.appendChild(
+      answerElement
+    );
+
+    card.appendChild(
+      button
+    );
+
+
+    flashcardOutput.appendChild(
+      card
+    );
+
+  }
+
+
+  if (count === 0) {
+
+    flashcardOutput.innerHTML =
+      '<div class="card"><p class="small">No flashcards could be read from the AI response.</p></div>';
+
+  }
+
+}
+
+
+/* AUDIO */
+
+function speakNotes() {
+
+  const notesElement =
+    document.getElementById("notesText");
+
+
+  if (!notesElement) {
+    return;
+  }
+
+
+  const text =
+    notesElement.innerText.trim();
+
+
+  if (!text) {
+    return;
+  }
+
+
+  speechSynthesis.cancel();
+
+
+  /*
+    Split very long notes into smaller
+    pieces so the browser can speak them
+    more reliably.
+  */
+
+  const chunks = [];
+
+
+  const sentences =
+    text.split(
+      /(?<=[.!?])\s+/
+    );
+
+
+  let current =
+    "";
+
+
+  sentences.forEach(
+    sentence => {
+
+      if (
+        (current + " " + sentence).length
+        > 350
+      ) {
+
+        if (current.trim()) {
+          chunks.push(
+            current.trim()
+          );
+        }
+
+        current =
+          sentence;
+
+      } else {
+
+        current +=
+          " " + sentence;
+
+      }
 
     }
   );
 
+
+  if (current.trim()) {
+
+    chunks.push(
+      current.trim()
+    );
+
+  }
+
+
+  let index = 0;
+
+
+  function speakNext() {
+
+    if (
+      index >= chunks.length
+    ) {
+      return;
+    }
+
+
+    const speech =
+      new SpeechSynthesisUtterance(
+        chunks[index]
+      );
+
+
+    speech.rate =
+      0.9;
+
+    speech.pitch =
+      1;
+
+
+    speech.onend =
+      function() {
+
+        index++;
+
+        speakNext();
+
+      };
+
+
+    speech.onerror =
+      function() {
+
+        index++;
+
+        speakNext();
+
+      };
+
+
+    speechSynthesis.speak(
+      speech
+    );
+
+  }
+
+
+  speakNext();
+
 }
 
+
+function pauseSpeech() {
+
+  speechSynthesis.pause();
+
+}
+
+
+function resumeSpeech() {
+
+  speechSynthesis.resume();
+
+}
+
+
+function stopSpeech() {
+
+  speechSynthesis.cancel();
+
+}
 
 /* AUDIO */
 
