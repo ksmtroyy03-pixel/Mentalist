@@ -1568,9 +1568,79 @@ function parseAIResponse(answer) {
     document.getElementById("flashcardOutput");
 
 
-  if (!notesOutput || !keyPointsOutput || !flashcardOutput) {
-    console.error("Mentalist output elements are missing.");
+  if (
+    !notesOutput ||
+    !keyPointsOutput ||
+    !flashcardOutput
+  ) {
+
+    console.error(
+      "Mentalist output elements are missing."
+    );
+
     return;
+
+  }
+
+
+  /*
+    CLEAN AI TEXT
+
+    Removes unwanted Markdown,
+    HTML entities and formatting symbols.
+  */
+
+  function cleanText(text) {
+
+    if (!text) {
+      return "";
+    }
+
+
+    return text
+
+      /* Remove HTML entities such as &#...; */
+
+      .replace(
+        /&#\d+;|&#x[a-fA-F0-9]+;|&[a-zA-Z]+;/g,
+        ""
+      )
+
+      /* Remove Markdown headings */
+
+      .replace(
+        /^#{1,6}\s*/gm,
+        ""
+      )
+
+      /* Remove Markdown bold / italic */
+
+      .replace(
+        /\*\*(.*?)\*\*/g,
+        "$1"
+      )
+
+      .replace(
+        /\*(.*?)\*/g,
+        "$1"
+      )
+
+      /* Remove code formatting */
+
+      .replace(
+        /`([^`]+)`/g,
+        "$1"
+      )
+
+      /* Clean excessive blank lines */
+
+      .replace(
+        /\n{3,}/g,
+        "\n\n"
+      )
+
+      .trim();
+
   }
 
 
@@ -1584,14 +1654,19 @@ function parseAIResponse(answer) {
     );
 
 
-  const notes =
+  let notes =
     notesMatch
       ? notesMatch[1].trim()
       : answer.trim();
 
 
+  notes =
+    cleanText(notes);
+
+
   notesOutput.innerText =
-    notes;
+    notes ||
+    "No notes were generated.";
 
 
   /*
@@ -1604,18 +1679,26 @@ function parseAIResponse(answer) {
     );
 
 
-  const keyPoints =
+  let keyPoints =
     keyPointsMatch
       ? keyPointsMatch[1].trim()
-      : "No key points were generated.";
+      : "";
+
+
+  keyPoints =
+    cleanText(keyPoints);
 
 
   keyPointsOutput.innerText =
-    keyPoints;
+    keyPoints ||
+    "No key points were generated.";
 
 
   /*
     FLASHCARDS
+
+    Keep the existing working
+    flashcard behavior.
   */
 
   flashcardOutput.innerHTML = "";
@@ -1646,6 +1729,7 @@ function parseAIResponse(answer) {
 
 
   let match;
+
   let count = 0;
 
 
@@ -1656,16 +1740,25 @@ function parseAIResponse(answer) {
       )) !== null
   ) {
 
-    const question =
-      match[1].trim();
+    let question =
+      cleanText(
+        match[1].trim()
+      );
 
 
-    const answerText =
-      match[2].trim();
+    let answerText =
+      cleanText(
+        match[2].trim()
+      );
 
 
-    if (!question || !answerText) {
+    if (
+      !question ||
+      !answerText
+    ) {
+
       continue;
+
     }
 
 
@@ -1714,21 +1807,12 @@ function parseAIResponse(answer) {
         );
 
 
-        if (
+        button.innerText =
           answerElement.classList.contains(
             "visible"
           )
-        ) {
-
-          button.innerText =
-            "Hide answer";
-
-        } else {
-
-          button.innerText =
-            "Show answer";
-
-        }
+            ? "Hide answer"
+            : "Show answer";
 
       };
 
