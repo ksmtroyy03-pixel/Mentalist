@@ -1969,30 +1969,91 @@ if (uploadArea) {
 </script>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
 
-  const menuButton =
-    document.getElementById("menuButton");
+document.addEventListener("DOMContentLoaded", function () {
 
   const sidebar =
     document.getElementById("sidebar");
 
+  const menuButton =
+    document.getElementById("menuButton");
 
-  if (!menuButton || !sidebar) {
-    return;
-  }
+  const buttons =
+    document.querySelectorAll(".side-button");
 
 
-  menuButton.addEventListener(
-    "click",
-    function () {
+  /* MENU */
+
+  if (menuButton && sidebar) {
+
+    menuButton.onclick = function () {
 
       sidebar.classList.toggle("open");
 
-    }
-  );
+    };
+
+  }
+
+
+  /* SIDEBAR BUTTONS */
+
+  buttons.forEach(function (button) {
+
+    button.onclick = function () {
+
+      const page =
+        button.getAttribute("data-page");
+
+
+      if (!page) {
+        return;
+      }
+
+
+      document
+        .querySelectorAll("section")
+        .forEach(function (section) {
+
+          section.classList.remove("active");
+
+        });
+
+
+      const target =
+        document.getElementById(page);
+
+
+      if (target) {
+
+        target.classList.add("active");
+
+      }
+
+
+      buttons.forEach(function (item) {
+
+        item.classList.remove("active");
+
+      });
+
+
+      button.classList.add("active");
+
+
+      sidebar.classList.remove("open");
+
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+    };
+
+  }
 
 });
+
 </script>
 
 </body>
