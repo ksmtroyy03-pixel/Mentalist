@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Mentalist — Observe, Interpret, Understand</title>
 
 <style>
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -13,16 +15,21 @@
 }
 
 :root {
-  --bg: #090b10;
-  --panel: #10131a;
-  --panel-soft: #141821;
-  --border: #252a34;
-  --border-soft: #1d212b;
-  --text: #eeeeee;
-  --muted: #9298a5;
-  --muted-2: #676d79;
-  --hover: #191e27;
-  --accent: #d9dce3;
+  --background: #17181c;
+  --surface: #202126;
+  --surface-light: #292a2f;
+  --surface-hover: #303137;
+
+  --border: rgba(255,255,255,0.08);
+
+  --text: #f1f1f1;
+  --muted: #a1a3aa;
+  --muted-dark: #777a82;
+
+  --sidebar-width: 245px;
+  --header-height: 72px;
+
+  --transition: 0.38s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html {
@@ -30,538 +37,1133 @@ html {
 }
 
 body {
-  font-family: Arial, sans-serif;
-  background: var(--bg);
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  background: var(--background);
   color: var(--text);
+
   min-height: 100vh;
+
+  overflow-x: hidden;
 }
 
-/* FIXED HEADER */
+
+/* =========================
+   HEADER
+========================= */
 
 header {
+
   position: fixed;
+
   top: 0;
   left: 0;
   right: 0;
-  height: 78px;
+
+  height: var(--header-height);
+
   z-index: 1000;
 
   display: flex;
   align-items: center;
 
-  padding: 0 28px;
+  padding: 0 22px;
 
-  background: rgba(16, 19, 26, 0.88);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  background:
+    rgba(41, 42, 47, 0.88);
 
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  border-bottom:
+    1px solid var(--border);
 
   box-shadow:
-    0 8px 30px rgba(0, 0, 0, 0.25);
+    0 10px 35px rgba(0,0,0,0.16);
+
+  transition:
+    background var(--transition),
+    box-shadow var(--transition);
 }
 
 .logo {
-  font-size: 21px;
+
+  font-size: 19px;
+
   font-weight: 700;
+
   letter-spacing: 4px;
+
+  white-space: nowrap;
 }
 
 .tagline {
+
   margin-left: 16px;
+
   color: var(--muted);
+
   font-size: 12px;
-  letter-spacing: 0.4px;
 }
 
-/* SIDEBAR */
 
-.sidebar {
-  position: fixed;
-  top: 78px;
-  left: 0;
-  bottom: 0;
-  width: 220px;
+/* =========================
+   MENU BUTTON
+========================= */
 
-  padding: 22px 14px;
+.menu-button {
 
-  background: #0d1016;
-  border-right: 1px solid var(--border-soft);
-
-  z-index: 900;
-}
-
-.sidebar-title {
-  color: var(--muted-2);
-  font-size: 10px;
-  font-weight: bold;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-
-  padding: 0 12px 10px;
-}
-
-.sidebar button {
-  width: 100%;
+  width: 40px;
+  height: 40px;
 
   display: flex;
+
   align-items: center;
+  justify-content: center;
 
-  background: transparent;
+  margin-right: 14px;
+
   border: 1px solid transparent;
-
-  color: var(--muted);
-
-  padding: 11px 12px;
-  margin-bottom: 4px;
 
   border-radius: 10px;
 
-  text-align: left;
-  font-size: 14px;
+  background: transparent;
+
+  color: var(--text);
 
   cursor: pointer;
 
   transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease;
+    background var(--transition),
+    border-color var(--transition);
+}
+
+.menu-button:hover {
+
+  background: var(--surface-hover);
+
+  border-color: var(--border);
+}
+
+.menu-icon {
+
+  width: 18px;
+  height: 14px;
+
+  position: relative;
+}
+
+.menu-icon span {
+
+  position: absolute;
+
+  left: 0;
+
+  width: 18px;
+  height: 2px;
+
+  border-radius: 2px;
+
+  background: #d5d6da;
+
+  transition:
+    transform var(--transition),
+    top var(--transition),
+    opacity var(--transition);
+}
+
+.menu-icon span:nth-child(1) {
+  top: 0;
+}
+
+.menu-icon span:nth-child(2) {
+  top: 6px;
+}
+
+.menu-icon span:nth-child(3) {
+  top: 12px;
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+
+  position: fixed;
+
+  top: var(--header-height);
+
+  left: 0;
+
+  bottom: 0;
+
+  width: var(--sidebar-width);
+
+  z-index: 900;
+
+  padding: 18px 12px;
+
+  background:
+    rgba(30,31,36,0.96);
+
+  border-right:
+    1px solid var(--border);
+
+  transform:
+    translateX(0);
+
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition);
+
+  overflow-y: auto;
+}
+
+.sidebar.hidden {
+
+  transform:
+    translateX(calc(-1 * var(--sidebar-width)));
+
+  box-shadow: none;
+}
+
+.sidebar-title {
+
+  padding:
+    8px 12px 10px;
+
+  color: var(--muted-dark);
+
+  font-size: 10px;
+
+  letter-spacing: 2px;
+
+  text-transform: uppercase;
+}
+
+.sidebar button {
+
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  padding:
+    11px 13px;
+
+  margin-bottom: 4px;
+
+  border:
+    1px solid transparent;
+
+  border-radius: 10px;
+
+  background: transparent;
+
+  color: var(--muted);
+
+  font-size: 14px;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background var(--transition),
+    color var(--transition),
+    transform var(--transition),
+    border-color var(--transition);
 }
 
 .sidebar button:hover {
-  background: var(--hover);
+
+  background:
+    var(--surface-hover);
+
   color: var(--text);
+
+  transform:
+    translateX(2px);
 }
 
 .sidebar button.active {
-  background: #181c24;
-  border-color: var(--border);
-  color: var(--text);
+
+  background:
+    #303137;
+
+  color:
+    var(--text);
+
+  border-color:
+    rgba(255,255,255,0.07);
 }
 
-/* MAIN */
+
+/* =========================
+   MAIN
+========================= */
 
 main {
-  margin-left: 220px;
-  padding-top: 78px;
+
+  margin-left:
+    var(--sidebar-width);
+
+  padding-top:
+    var(--header-height);
 
   min-height: 100vh;
+
+  transition:
+    margin-left var(--transition);
+}
+
+main.expanded {
+
+  margin-left: 0;
 }
 
 .content {
-  width: min(900px, 100%);
-  margin: auto;
-  padding: 28px 25px 70px;
+
+  width:
+    min(920px, 100%);
+
+  margin:
+    0 auto;
+
+  padding:
+    30px 28px 80px;
 }
 
-/* SECTIONS */
+
+/* =========================
+   SECTIONS
+========================= */
 
 section {
+
   display: none;
+
+  animation:
+    sectionEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 section.active {
+
   display: block;
 }
 
+@keyframes sectionEnter {
+
+  from {
+
+    opacity: 0;
+
+    transform:
+      translateY(14px);
+
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform:
+      translateY(0);
+
+  }
+}
+
+
+/* =========================
+   HERO
+========================= */
+
 .hero {
-  padding: 30px 4px 20px;
+
+  padding:
+    35px 4px 28px;
 }
 
 .hero h1 {
+
   font-size: 30px;
-  line-height: 1.2;
+
+  line-height: 1.25;
+
+  font-weight: 600;
+
   margin-bottom: 9px;
 }
 
 .hero p {
-  color: var(--muted);
-  line-height: 1.6;
+
+  color:
+    var(--muted);
+
+  line-height:
+    1.65;
 }
 
-/* CARDS */
 
-.card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 22px;
-  margin: 15px 0;
+/* =========================
+   OPEN WORKSPACE
+========================= */
+
+.workspace {
+
+  padding:
+    5px 0;
 }
 
-.card h2 {
-  font-size: 18px;
-  margin-bottom: 10px;
+.workspace-text {
+
+  max-width: 700px;
+
+  color:
+    var(--muted);
+
+  line-height:
+    1.8;
+
+  font-size:
+    15px;
 }
 
-.card p {
-  color: var(--muted);
-  line-height: 1.6;
+.workspace-title {
+
+  font-size:
+    18px;
+
+  margin-bottom:
+    10px;
+
+  font-weight:
+    500;
 }
 
-/* EMPTY STATE */
 
-.empty-state {
-  text-align: center;
-  padding: 65px 20px;
-}
+/* =========================
+   UPLOAD COMPOSER
+========================= */
 
-.empty-state h2 {
-  margin-bottom: 9px;
-  font-size: 20px;
-}
+.upload-area {
 
-.empty-state p {
-  max-width: 500px;
-  margin: auto;
-  color: var(--muted);
-  line-height: 1.6;
-}
+  margin-top:
+    25px;
 
-/* UPLOAD */
+  border:
+    1px solid var(--border);
 
-.upload {
-  border: 1px dashed #3a404c;
-  padding: 48px 20px;
-  text-align: center;
-  border-radius: 15px;
+  border-radius:
+    17px;
+
+  background:
+    var(--surface);
+
+  padding:
+    18px;
+
   transition:
-    border-color 0.2s ease,
-    background 0.2s ease;
+    border-color var(--transition),
+    background var(--transition),
+    transform var(--transition);
 }
 
-.upload:hover {
-  border-color: #555c69;
-  background: rgba(255, 255, 255, 0.015);
+.upload-area:hover {
+
+  border-color:
+    rgba(255,255,255,0.15);
+
+  background:
+    var(--surface-light);
 }
 
-.upload h2 {
-  font-size: 19px;
-  margin-bottom: 8px;
+.upload-inner {
+
+  min-height:
+    155px;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  text-align:
+    center;
+
+  border:
+    1px dashed rgba(255,255,255,0.13);
+
+  border-radius:
+    12px;
+
+  padding:
+    25px;
 }
 
-.file-info {
-  margin-top: 14px;
-  color: var(--muted);
-  font-size: 13px;
+.upload-inner h2 {
+
+  font-size:
+    17px;
+
+  font-weight:
+    500;
+
+  margin-bottom:
+    8px;
 }
 
-input[type="file"] {
-  width: 100%;
-  max-width: 380px;
-  margin-top: 18px;
+.upload-inner p {
 
-  color: var(--muted);
-  font-size: 13px;
+  color:
+    var(--muted);
+
+  font-size:
+    13px;
+
+  line-height:
+    1.6;
 }
 
-input[type="file"]::file-selector-button {
-  background: #1a1e27;
-  color: var(--text);
+.file-input {
 
-  border: 1px solid var(--border);
+  margin-top:
+    18px;
 
-  padding: 9px 12px;
-  margin-right: 10px;
+  color:
+    var(--muted);
 
-  border-radius: 8px;
-
-  cursor: pointer;
+  font-size:
+    13px;
 }
+
+.file-input::file-selector-button {
+
+  background:
+    #34353b;
+
+  color:
+    var(--text);
+
+  border:
+    1px solid var(--border);
+
+  padding:
+    8px 12px;
+
+  margin-right:
+    8px;
+
+  border-radius:
+    8px;
+
+  cursor:
+    pointer;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
 
 .primary {
-  background: var(--accent);
-  color: #0b0d12;
 
-  border: none;
+  margin-top:
+    14px;
 
-  padding: 12px 18px;
-  border-radius: 10px;
+  padding:
+    11px 17px;
 
-  font-weight: 700;
-  font-size: 14px;
+  border:
+    none;
 
-  cursor: pointer;
+  border-radius:
+    9px;
 
-  margin-top: 18px;
+  background:
+    #e1e1e4;
+
+  color:
+    #17181c;
+
+  font-size:
+    13px;
+
+  font-weight:
+    600;
+
+  cursor:
+    pointer;
 
   transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
+    opacity var(--transition),
+    transform var(--transition);
 }
 
 .primary:hover {
-  opacity: 0.88;
+
+  opacity:
+    0.88;
+
+  transform:
+    translateY(-1px);
 }
 
 .primary:active {
-  transform: scale(0.98);
+
+  transform:
+    translateY(1px);
 }
 
 .primary:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
+
+  opacity:
+    0.45;
+
+  cursor:
+    not-allowed;
 }
 
-/* STATUS */
+
+/* =========================
+   STATUS
+========================= */
 
 .status {
-  margin-top: 15px;
-  min-height: 20px;
 
-  color: var(--muted);
-  font-size: 13px;
+  min-height:
+    20px;
+
+  margin-top:
+    13px;
+
+  color:
+    var(--muted);
+
+  font-size:
+    13px;
+
+  text-align:
+    center;
 }
 
 .status.error {
-  color: #d98c8c;
+
+  color:
+    #d99b9b;
 }
 
 .status.success {
-  color: #aeb7b0;
+
+  color:
+    #aeb9b0;
 }
 
-/* NOTES */
 
-textarea {
-  width: 100%;
-  min-height: 300px;
+/* =========================
+   NOTES
+========================= */
 
-  background: #0b0e13;
-  color: var(--text);
+.notes-container {
 
-  border: 1px solid #303541;
-  border-radius: 11px;
-
-  padding: 16px;
-
-  resize: vertical;
-
-  font-size: 15px;
-  line-height: 1.7;
-
-  outline: none;
+  padding:
+    4px 0;
 }
 
-textarea:focus {
-  border-color: #4a515e;
+.notes-text {
+
+  width:
+    100%;
+
+  min-height:
+    390px;
+
+  border:
+    none;
+
+  outline:
+    none;
+
+  resize:
+    vertical;
+
+  background:
+    transparent;
+
+  color:
+    var(--text);
+
+  font-size:
+    15px;
+
+  line-height:
+    1.8;
+
+  padding:
+    10px 0;
 }
+
+.notes-text::placeholder {
+
+  color:
+    var(--muted-dark);
+}
+
+
+/* =========================
+   AUDIO
+========================= */
 
 .audio-controls {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
 
-  margin-top: 12px;
+  display:
+    flex;
+
+  gap:
+    8px;
+
+  flex-wrap:
+    wrap;
+
+  margin-top:
+    12px;
 }
 
 .audio-controls button {
-  padding: 9px 13px;
 
-  border-radius: 9px;
+  padding:
+    8px 12px;
 
-  border: 1px solid var(--border);
+  border:
+    1px solid var(--border);
 
-  background: #181c24;
-  color: var(--text);
+  border-radius:
+    8px;
 
-  cursor: pointer;
+  background:
+    var(--surface);
+
+  color:
+    var(--muted);
+
+  cursor:
+    pointer;
+
+  transition:
+    background var(--transition),
+    color var(--transition);
 }
 
 .audio-controls button:hover {
-  background: #20252f;
+
+  background:
+    var(--surface-hover);
+
+  color:
+    var(--text);
 }
 
-/* KEY POINTS */
+
+/* =========================
+   KEY POINTS
+========================= */
 
 .key-points {
-  padding-left: 20px;
-  color: var(--muted);
 
-  line-height: 2;
+  list-style:
+    none;
+
+  padding:
+    0;
+
+  margin-top:
+    15px;
 }
 
-/* FLASHCARDS */
+.key-points li {
+
+  padding:
+    11px 0;
+
+  border-bottom:
+    1px solid var(--border);
+
+  color:
+    var(--muted);
+
+  line-height:
+    1.6;
+}
+
+.key-points li:last-child {
+
+  border-bottom:
+    none;
+}
+
+
+/* =========================
+   FLASHCARDS
+========================= */
 
 .flashcard {
-  background: var(--panel);
-  border: 1px solid var(--border);
 
-  border-radius: 14px;
+  padding:
+    20px 0;
 
-  padding: 20px;
-  margin-top: 12px;
+  border-bottom:
+    1px solid var(--border);
 }
 
 .flashcard h2 {
-  font-size: 16px;
-  line-height: 1.5;
+
+  font-size:
+    16px;
+
+  font-weight:
+    500;
+
+  line-height:
+    1.6;
 }
 
 .flashcard .answer {
-  margin-top: 14px;
 
-  color: var(--muted);
+  margin-top:
+    12px;
 
-  line-height: 1.6;
+  color:
+    var(--muted);
 
-  display: none;
+  line-height:
+    1.7;
+
+  display:
+    none;
 }
 
-/* LOADING */
+
+/* =========================
+   LOADING
+========================= */
 
 .loading {
-  display: none;
 
-  text-align: center;
+  display:
+    none;
 
-  padding: 30px;
+  text-align:
+    center;
 
-  color: var(--muted);
+  padding:
+    45px 20px;
+
+  color:
+    var(--muted);
+
+  animation:
+    fadeIn 0.35s ease;
 }
 
 .loading.active {
-  display: block;
+
+  display:
+    block;
 }
 
 .loader {
-  width: 24px;
-  height: 24px;
 
-  border: 2px solid #303541;
-  border-top-color: #cfd2d8;
+  width:
+    23px;
 
-  border-radius: 50%;
+  height:
+    23px;
 
-  animation: spin 0.8s linear infinite;
+  margin:
+    0 auto 13px;
 
-  margin: 0 auto 12px;
+  border:
+    2px solid #3a3b41;
+
+  border-top-color:
+    #d6d6da;
+
+  border-radius:
+    50%;
+
+  animation:
+    spin 0.8s linear infinite;
 }
 
 @keyframes spin {
+
   to {
-    transform: rotate(360deg);
+    transform:
+      rotate(360deg);
   }
 }
 
-/* FOOTER */
+@keyframes fadeIn {
 
-footer {
-  color: var(--muted-2);
+  from {
+    opacity:
+      0;
+  }
 
-  padding: 25px;
-
-  text-align: center;
-
-  font-size: 11px;
+  to {
+    opacity:
+      1;
+  }
 }
 
-/* MOBILE */
 
-@media (max-width: 700px) {
+/* =========================
+   SETTINGS
+========================= */
+
+.setting {
+
+  padding:
+    17px 0;
+
+  border-bottom:
+    1px solid var(--border);
+}
+
+.setting:last-child {
+
+  border-bottom:
+    none;
+}
+
+.setting h3 {
+
+  font-size:
+    14px;
+
+  font-weight:
+    500;
+
+  margin-bottom:
+    6px;
+}
+
+.setting p {
+
+  color:
+    var(--muted);
+
+  font-size:
+    13px;
+
+  line-height:
+    1.6;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+
+  padding:
+    35px 0;
+
+  color:
+    var(--muted-dark);
+
+  font-size:
+    11px;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 760px) {
+
+  :root {
+    --header-height: 66px;
+  }
 
   header {
-    height: 68px;
-    padding: 0 18px;
+    padding:
+      0 14px;
   }
 
   .logo {
-    font-size: 18px;
-    letter-spacing: 3px;
+    font-size:
+      17px;
   }
 
   .tagline {
-    display: none;
+    display:
+      none;
   }
 
   .sidebar {
-    top: 68px;
-    width: 68px;
 
-    padding: 15px 8px;
+    width:
+      min(245px, 82vw);
+
+    box-shadow:
+      12px 0 40px rgba(0,0,0,0.3);
   }
 
-  .sidebar-title {
-    display: none;
-  }
+  .sidebar.hidden {
 
-  .sidebar button {
-    justify-content: center;
-
-    padding: 12px 4px;
-
-    font-size: 0;
-  }
-
-  .sidebar button::before {
-    content: "•";
-
-    font-size: 18px;
-
-    color: var(--muted);
-  }
-
-  .sidebar button.active::before {
-    color: var(--text);
+    transform:
+      translateX(-100%);
   }
 
   main {
-    margin-left: 68px;
-    padding-top: 68px;
+
+    margin-left:
+      0;
+  }
+
+  main.expanded {
+
+    margin-left:
+      0;
   }
 
   .content {
-    padding: 18px 14px 50px;
+
+    padding:
+      20px 17px 60px;
   }
 
   .hero {
-    padding-top: 22px;
+
+    padding-top:
+      25px;
   }
 
   .hero h1 {
-    font-size: 25px;
+
+    font-size:
+      25px;
   }
 
-  .card {
-    padding: 17px;
-  }
-
-  .upload {
-    padding: 35px 14px;
-  }
 }
 
-@media (max-width: 430px) {
 
-  .sidebar {
-    width: 58px;
-  }
+/* =========================
+   SIDEBAR OVERLAY
+========================= */
 
-  main {
-    margin-left: 58px;
-  }
+.overlay {
 
-  .content {
-    padding-left: 10px;
-    padding-right: 10px;
-  }
+  position:
+    fixed;
+
+  inset:
+    0;
+
+  z-index:
+    850;
+
+  background:
+    rgba(0,0,0,0.35);
+
+  backdrop-filter:
+    blur(2px);
+
+  opacity:
+    0;
+
+  pointer-events:
+    none;
+
+  transition:
+    opacity var(--transition);
 }
+
+.overlay.active {
+
+  opacity:
+    1;
+
+  pointer-events:
+    auto;
+}
+
+@media (min-width: 761px) {
+
+  .overlay {
+    display:
+      none;
+  }
+
+}
+
 </style>
 </head>
 
+
 <body>
 
-<!-- FIXED HEADER -->
+
+<!-- HEADER -->
 
 <header>
-  <div class="logo">MENTALIST</div>
-  <div class="tagline">Observe, Interpret, Understand</div>
+
+  <button
+    class="menu-button"
+    onclick="toggleSidebar()"
+    aria-label="Toggle navigation">
+
+    <div class="menu-icon">
+
+      <span></span>
+      <span></span>
+      <span></span>
+
+    </div>
+
+  </button>
+
+  <div class="logo">
+    MENTALIST
+  </div>
+
+  <div class="tagline">
+    Observe, Interpret, Understand
+  </div>
+
 </header>
+
+
+<!-- OVERLAY -->
+
+<div
+  class="overlay"
+  id="overlay"
+  onclick="toggleSidebar()">
+</div>
 
 
 <!-- SIDEBAR -->
 
-<aside class="sidebar">
+<aside
+  class="sidebar"
+  id="sidebar">
 
   <div class="sidebar-title">
     Workspace
@@ -570,32 +1172,44 @@ footer {
   <button
     class="active"
     onclick="showPage('dashboard', this)">
+
     Home
+
   </button>
 
   <button
     onclick="showPage('upload', this)">
+
     Analyze
+
   </button>
 
   <button
     onclick="showPage('notes', this)">
+
     Notes
+
   </button>
 
   <button
     onclick="showPage('flashcards', this)">
+
     Flashcards
+
   </button>
 
   <button
     onclick="showPage('planner', this)">
+
     Study Plan
+
   </button>
 
   <button
     onclick="showPage('settings', this)">
+
     Settings
+
   </button>
 
 </aside>
@@ -603,103 +1217,143 @@ footer {
 
 <!-- MAIN -->
 
-<main>
+<main id="main">
 
 <div class="content">
 
 
 <!-- HOME -->
 
-<section id="dashboard" class="active">
-
-  <div class="hero">
-    <h1>Welcome to Mentalist.</h1>
-
-    <p>
-      Your study space for understanding,
-      remembering and mastering.
-    </p>
-  </div>
-
-  <div class="card empty-state">
-
-    <h2>Your workspace is ready.</h2>
-
-    <p>
-      Upload study material to begin an analysis.
-      Mentalist will turn your material into
-      understandable notes and study resources.
-    </p>
-
-    <button
-      class="primary"
-      onclick="showPage('upload')">
-      Analyze Material
-    </button>
-
-  </div>
-
-</section>
-
-
-<!-- UPLOAD / ANALYSIS -->
-
-<section id="upload">
+<section
+  id="dashboard"
+  class="active">
 
   <div class="hero">
 
-    <h1>Analyze Material</h1>
+    <h1>
+      Welcome to Mentalist.
+    </h1>
 
     <p>
-      Upload your study material and Mentalist
-      will analyze it.
+      A quiet workspace for understanding,
+      remembering and mastering what you study.
     </p>
 
   </div>
 
-  <div class="card">
 
-    <div class="upload">
+  <div class="workspace">
 
-      <h2>Select study material</h2>
+    <div class="workspace-title">
+      Your workspace is ready.
+    </div>
 
-      <p class="small">
-        TXT files are currently supported.
-        PDF and Word support can be added next.
-      </p>
+    <p class="workspace-text">
 
-      <input
-        type="file"
-        id="fileInput"
-        accept=".txt,text/plain">
+      Upload your study material whenever you're ready.
+      Mentalist will analyze it and turn it into
+      clear notes, key points and flashcards.
 
-      <br>
+    </p>
 
-      <button
-        class="primary"
-        id="analyzeButton"
-        onclick="processFile()">
-        Analyze Material
-      </button>
 
-      <div
-        id="fileStatus"
-        class="status">
+    <div class="upload-area">
+
+      <div class="upload-inner">
+
+        <h2>
+          Start with your study material
+        </h2>
+
+        <p>
+          Select a TXT file to begin an analysis.
+        </p>
+
+        <button
+          class="primary"
+          onclick="showPage('upload')">
+
+          Analyze Material
+
+        </button>
+
       </div>
 
     </div>
 
   </div>
 
-  <div
-    id="loading"
-    class="loading">
+</section>
 
-    <div class="loader"></div>
+
+<!-- ANALYZE -->
+
+<section
+  id="upload">
+
+  <div class="hero">
+
+    <h1>
+      Analyze Material
+    </h1>
 
     <p>
-      Mentalist is analyzing your material.
+      Give Mentalist something to understand.
     </p>
+
+  </div>
+
+
+  <div class="workspace">
+
+    <div class="upload-area">
+
+      <div class="upload-inner">
+
+        <h2>
+          Select a study file
+        </h2>
+
+        <p>
+          TXT files are currently supported.
+        </p>
+
+        <input
+          class="file-input"
+          type="file"
+          id="fileInput"
+          accept=".txt,text/plain">
+
+        <button
+          class="primary"
+          id="analyzeButton"
+          onclick="processFile()">
+
+          Analyze Material
+
+        </button>
+
+        <div
+          id="fileStatus"
+          class="status">
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div
+      id="loading"
+      class="loading">
+
+      <div class="loader"></div>
+
+      <p>
+        Mentalist is carefully analyzing your material.
+      </p>
+
+    </div>
 
   </div>
 
@@ -708,25 +1362,30 @@ footer {
 
 <!-- NOTES -->
 
-<section id="notes">
+<section
+  id="notes">
 
   <div class="hero">
 
-    <h1>Simplified Notes</h1>
+    <h1>
+      Notes
+    </h1>
 
     <p>
-      Your AI-generated notes will appear here
-      after you analyze study material.
+      Your generated notes will appear here.
     </p>
 
   </div>
 
-  <div class="card">
+
+  <div class="notes-container">
 
     <textarea
       id="notesText"
-      placeholder="Your generated notes will appear here.">
+      class="notes-text"
+      placeholder="Analyze a study file to generate notes.">
     </textarea>
+
 
     <div class="audio-controls">
 
@@ -748,16 +1407,25 @@ footer {
 
     </div>
 
-  </div>
 
-  <div class="card">
+    <div style="margin-top:40px;">
 
-    <h2>Key Points</h2>
+      <h2
+        style="
+          font-size:18px;
+          font-weight:500;
+        ">
 
-    <ul
-      id="keyPoints"
-      class="key-points">
-    </ul>
+        Key Points
+
+      </h2>
+
+      <ul
+        id="keyPoints"
+        class="key-points">
+      </ul>
+
+    </div>
 
   </div>
 
@@ -766,11 +1434,14 @@ footer {
 
 <!-- FLASHCARDS -->
 
-<section id="flashcards">
+<section
+  id="flashcards">
 
   <div class="hero">
 
-    <h1>Flashcards</h1>
+    <h1>
+      Flashcards
+    </h1>
 
     <p>
       Test your understanding instead of
@@ -779,18 +1450,17 @@ footer {
 
   </div>
 
-  <div id="flashcardsContainer">
 
-    <div class="card empty-state">
+  <div
+    id="flashcardsContainer">
 
-      <h2>No flashcards yet.</h2>
+    <p
+      class="workspace-text">
 
-      <p>
-        Analyze study material to generate
-        flashcards.
-      </p>
+      Analyze study material to generate
+      personalized flashcards.
 
-    </div>
+    </p>
 
   </div>
 
@@ -799,11 +1469,14 @@ footer {
 
 <!-- PLANNER -->
 
-<section id="planner">
+<section
+  id="planner">
 
   <div class="hero">
 
-    <h1>Study Plan</h1>
+    <h1>
+      Study Plan
+    </h1>
 
     <p>
       Your timetable. Your rules.
@@ -811,18 +1484,15 @@ footer {
 
   </div>
 
-  <div class="card">
 
-    <div class="empty-state">
+  <div class="workspace">
 
-      <h2>Your study plan is empty.</h2>
+    <p class="workspace-text">
 
-      <p>
-        Study planning tools can be added
-        here once your analysis system is ready.
-      </p>
+      Your study plan is currently empty.
+      Planning tools can be added here next.
 
-    </div>
+    </p>
 
   </div>
 
@@ -831,37 +1501,50 @@ footer {
 
 <!-- SETTINGS -->
 
-<section id="settings">
+<section
+  id="settings">
 
   <div class="hero">
 
-    <h1>Settings</h1>
+    <h1>
+      Settings
+    </h1>
 
     <p>
-      Customize your Mentalist experience.
+      Manage your Mentalist workspace.
     </p>
 
   </div>
 
-  <div class="card">
 
-    <h2>Interface</h2>
+  <div class="workspace">
 
-    <p>
-      Mentalist is currently using the default
-      dark interface.
-    </p>
+    <div class="setting">
 
-  </div>
+      <h3>
+        Interface
+      </h3>
 
-  <div class="card">
+      <p>
+        Mentalist uses a dark neutral interface
+        designed to keep attention on your study material.
+      </p>
 
-    <h2>AI Analysis</h2>
+    </div>
 
-    <p>
-      AI analysis is powered through your
-      secure Vercel API connection.
-    </p>
+
+    <div class="setting">
+
+      <h3>
+        AI Analysis
+      </h3>
+
+      <p>
+        Your uploaded study material is sent through
+        the secure Mentalist API for analysis.
+      </p>
+
+    </div>
 
   </div>
 
@@ -872,6 +1555,7 @@ footer {
   Mentalist — Observe, Interpret, Understand
 </footer>
 
+
 </div>
 
 </main>
@@ -879,40 +1563,107 @@ footer {
 
 <script>
 
-/* PAGE NAVIGATION */
+
+/* =========================
+   SIDEBAR
+========================= */
+
+const sidebar =
+  document.getElementById("sidebar");
+
+const main =
+  document.getElementById("main");
+
+const overlay =
+  document.getElementById("overlay");
+
+
+function toggleSidebar() {
+
+  sidebar.classList.toggle("hidden");
+
+  const isMobile =
+    window.innerWidth <= 760;
+
+
+  if (!isMobile) {
+
+    main.classList.toggle("expanded");
+
+  } else {
+
+    overlay.classList.toggle("active");
+
+  }
+
+}
+
+
+/* =========================
+   PAGE NAVIGATION
+========================= */
 
 function showPage(page, button) {
 
   document
     .querySelectorAll("section")
     .forEach(section => {
+
       section.classList.remove("active");
+
     });
 
-  const target = document.getElementById(page);
+
+  const target =
+    document.getElementById(page);
+
 
   if (target) {
+
     target.classList.add("active");
+
   }
+
 
   document
     .querySelectorAll(".sidebar button")
     .forEach(btn => {
+
       btn.classList.remove("active");
+
     });
 
+
   if (button) {
+
     button.classList.add("active");
+
   }
 
+
   window.scrollTo({
+
     top: 0,
+
     behavior: "smooth"
+
   });
+
+
+  if (window.innerWidth <= 760) {
+
+    sidebar.classList.add("hidden");
+
+    overlay.classList.remove("active");
+
+  }
+
 }
 
 
-/* FILE ANALYSIS */
+/* =========================
+   FILE ANALYSIS
+========================= */
 
 async function processFile() {
 
@@ -931,25 +1682,34 @@ async function processFile() {
   const file =
     fileInput.files[0];
 
+
   if (!file) {
 
-    status.className = "status error";
+    status.className =
+      "status error";
 
     status.innerText =
       "Please select a file first.";
 
     return;
+
   }
 
 
-  if (!file.name.toLowerCase().endsWith(".txt")) {
+  if (
+    !file.name
+      .toLowerCase()
+      .endsWith(".txt")
+  ) {
 
-    status.className = "status error";
+    status.className =
+      "status error";
 
     status.innerText =
-      "This version supports TXT files. PDF and Word support will be added next.";
+      "This version supports TXT files.";
 
     return;
+
   }
 
 
@@ -957,10 +1717,12 @@ async function processFile() {
 
     button.disabled = true;
 
-    status.className = "status";
+    status.className =
+      "status";
 
     status.innerText =
       "Reading your file...";
+
 
     loading.classList.add("active");
 
@@ -974,6 +1736,7 @@ async function processFile() {
       throw new Error(
         "The selected file appears to be empty."
       );
+
     }
 
 
@@ -1000,7 +1763,8 @@ Provide the most important facts or concepts as bullet points.
 
 FLASHCARDS:
 Create 5 useful flashcards.
-For each flashcard use this format:
+
+For each flashcard use:
 
 Q: question
 A: answer
@@ -1011,24 +1775,32 @@ Analyze whatever subject the uploaded material actually contains.
 Study material:
 
 ${text}
+
 `;
 
 
     const response =
-      await fetch("/api/chat", {
+      await fetch(
+        "/api/chat",
+        {
 
-        method: "POST",
+          method:
+            "POST",
 
-        headers: {
-          "Content-Type":
-            "application/json"
-        },
+          headers: {
 
-        body: JSON.stringify({
-          message: prompt
-        })
+            "Content-Type":
+              "application/json"
 
-      });
+          },
+
+          body:
+            JSON.stringify({
+              message: prompt
+            })
+
+        }
+      );
 
 
     const data =
@@ -1041,6 +1813,7 @@ ${text}
         data.error ||
         "The AI request failed."
       );
+
     }
 
 
@@ -1049,10 +1822,13 @@ ${text}
       throw new Error(
         "The AI returned an empty response."
       );
+
     }
 
 
-    parseAIResponse(data.answer);
+    parseAIResponse(
+      data.answer
+    );
 
 
     status.className =
@@ -1061,16 +1837,24 @@ ${text}
     status.innerText =
       "Analysis complete.";
 
-    loading.classList.remove("active");
+
+    loading.classList.remove(
+      "active"
+    );
 
 
     showPage("notes");
+
 
   } catch (error) {
 
     console.error(error);
 
-    loading.classList.remove("active");
+
+    loading.classList.remove(
+      "active"
+    );
+
 
     status.className =
       "status error";
@@ -1084,15 +1868,20 @@ ${text}
     button.disabled = false;
 
   }
+
 }
 
 
-/* AI RESPONSE PARSER */
+/* =========================
+   AI RESPONSE PARSER
+========================= */
 
 function parseAIResponse(answer) {
 
   let notes = "";
+
   let keyPoints = [];
+
   let flashcards = [];
 
 
@@ -1115,9 +1904,15 @@ function parseAIResponse(answer) {
 
 
   if (notesMatch) {
-    notes = notesMatch[1].trim();
+
+    notes =
+      notesMatch[1].trim();
+
   } else {
-    notes = answer.trim();
+
+    notes =
+      answer.trim();
+
   }
 
 
@@ -1128,7 +1923,10 @@ function parseAIResponse(answer) {
         .split("\n")
         .map(line =>
           line
-            .replace(/^[-*•]\s*/, "")
+            .replace(
+              /^[-*•]\s*/,
+              ""
+            )
             .trim()
         )
         .filter(Boolean);
@@ -1158,6 +1956,7 @@ function parseAIResponse(answer) {
             /Q:\s*(.*?)(?=\s*A:)/is
           );
 
+
         const answerMatch =
           item.match(
             /A:\s*([\s\S]*)/i
@@ -1170,11 +1969,13 @@ function parseAIResponse(answer) {
         ) {
 
           flashcards.push({
+
             question:
               question[1].trim(),
 
             answer:
               answerMatch[1].trim()
+
           });
 
         }
@@ -1196,26 +1997,38 @@ function parseAIResponse(answer) {
       "keyPoints"
     );
 
-  keyPointsContainer.innerHTML = "";
+
+  keyPointsContainer.innerHTML =
+    "";
 
 
   keyPoints.forEach(point => {
 
     const li =
-      document.createElement("li");
+      document.createElement(
+        "li"
+      );
 
-    li.textContent = point;
+    li.textContent =
+      point;
 
-    keyPointsContainer.appendChild(li);
+    keyPointsContainer.appendChild(
+      li
+    );
 
   });
 
 
-  renderFlashcards(flashcards);
+  renderFlashcards(
+    flashcards
+  );
+
 }
 
 
-/* FLASHCARDS */
+/* =========================
+   FLASHCARDS
+========================= */
 
 function renderFlashcards(cards) {
 
@@ -1228,95 +2041,122 @@ function renderFlashcards(cards) {
   if (!cards.length) {
 
     container.innerHTML = `
-      <div class="card empty-state">
-        <h2>No flashcards were generated.</h2>
-        <p>
-          Try analyzing the material again.
-        </p>
-      </div>
+      <p class="workspace-text">
+        No flashcards were generated.
+        Try analyzing the material again.
+      </p>
     `;
 
     return;
+
   }
 
 
-  container.innerHTML = "";
+  container.innerHTML =
+    "";
 
 
-  cards.forEach((card, index) => {
+  cards.forEach(
+    (card, index) => {
 
-    const element =
-      document.createElement("div");
-
-    element.className =
-      "flashcard";
-
-
-    element.innerHTML = `
-      <h2>
-        ${escapeHTML(card.question)}
-      </h2>
-
-      <div
-        class="answer"
-        id="answer-${index}">
-        ${escapeHTML(card.answer)}
-      </div>
-
-      <button
-        class="primary"
-        onclick="toggleAnswer('answer-${index}')">
-        Show Answer
-      </button>
-    `;
+      const element =
+        document.createElement(
+          "div"
+        );
 
 
-    container.appendChild(element);
+      element.className =
+        "flashcard";
 
-  });
+
+      element.innerHTML = `
+
+        <h2>
+          ${escapeHTML(card.question)}
+        </h2>
+
+        <div
+          class="answer"
+          id="answer-${index}">
+
+          ${escapeHTML(card.answer)}
+
+        </div>
+
+        <button
+          class="primary"
+          onclick="toggleAnswer('answer-${index}')">
+
+          Show Answer
+
+        </button>
+
+      `;
+
+
+      container.appendChild(
+        element
+      );
+
+    }
+  );
 
 }
 
 
-/* SAFE TEXT DISPLAY */
+/* =========================
+   SAFE HTML
+========================= */
 
 function escapeHTML(text) {
 
   const div =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
-  div.textContent = text;
+  div.textContent =
+    text;
 
   return div.innerHTML;
+
 }
 
 
-/* FLASHCARD ANSWERS */
+/* =========================
+   FLASHCARD ANSWERS
+========================= */
 
 function toggleAnswer(id) {
 
   const answer =
     document.getElementById(id);
 
+
   if (!answer) return;
 
 
   if (
-    answer.style.display === "block"
+    answer.style.display ===
+    "block"
   ) {
 
-    answer.style.display = "none";
+    answer.style.display =
+      "none";
 
   } else {
 
-    answer.style.display = "block";
+    answer.style.display =
+      "block";
 
   }
 
 }
 
 
-/* TEXT TO SPEECH */
+/* =========================
+   TEXT TO SPEECH
+========================= */
 
 function speakNotes() {
 
@@ -1333,14 +2173,22 @@ function speakNotes() {
 
 
   const speech =
-    new SpeechSynthesisUtterance(text);
+    new SpeechSynthesisUtterance(
+      text
+    );
 
 
-  speech.rate = 0.9;
-  speech.pitch = 1;
+  speech.rate =
+    0.9;
+
+  speech.pitch =
+    1;
 
 
-  speechSynthesis.speak(speech);
+  speechSynthesis.speak(
+    speech
+  );
+
 }
 
 
@@ -1364,7 +2212,58 @@ function stopSpeech() {
 
 }
 
+
+/* =========================
+   INITIAL STATE
+========================= */
+
+if (window.innerWidth <= 760) {
+
+  sidebar.classList.add(
+    "hidden"
+  );
+
+}
+
+
+/* =========================
+   RESIZE HANDLING
+========================= */
+
+window.addEventListener(
+  "resize",
+  () => {
+
+    if (window.innerWidth <= 760) {
+
+      sidebar.classList.add(
+        "hidden"
+      );
+
+      main.classList.remove(
+        "expanded"
+      );
+
+      overlay.classList.remove(
+        "active"
+      );
+
+    } else {
+
+      sidebar.classList.remove(
+        "hidden"
+      );
+
+      overlay.classList.remove(
+        "active"
+      );
+
+    }
+
+  }
+);
+
 </script>
 
 </body>
-  </html>
+</html>
