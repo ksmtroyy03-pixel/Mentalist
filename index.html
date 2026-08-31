@@ -1533,33 +1533,23 @@ function parseAIResponse(answer) {
     document.getElementById("flashcardOutput");
 
 
-  /*
-    Find the three main sections.
-  */
-
-  const notesMatch =
-    answer.match(
-      /(?:SECTION\s*1:\s*)?NOTES\s*([\s\S]*?)(?=(?:SECTION\s*2:\s*)?KEY POINTS|(?:SECTION\s*3:\s*)?FLASHCARDS|$)/i
-    );
-
-
-  const keyPointsMatch =
-    answer.match(
-      /(?:SECTION\s*2:\s*)?KEY POINTS\s*([\s\S]*?)(?=(?:SECTION\s*3:\s*)?FLASHCARDS|$)/i
-    );
-
-
-  const flashcardsMatch =
-    answer.match(
-      /(?:SECTION\s*3:\s*)?FLASHCARDS\s*([\s\S]*)/i
-    );
+  if (!notesOutput || !keyPointsOutput || !flashcardOutput) {
+    console.error("Mentalist output elements are missing.");
+    return;
+  }
 
 
   /*
     NOTES
   */
 
-  let notes =
+  const notesMatch =
+    answer.match(
+      /NOTES\s*([\s\S]*?)(?=KEY POINTS|FLASHCARDS|$)/i
+    );
+
+
+  const notes =
     notesMatch
       ? notesMatch[1].trim()
       : answer.trim();
@@ -1573,7 +1563,13 @@ function parseAIResponse(answer) {
     KEY POINTS
   */
 
-  let keyPoints =
+  const keyPointsMatch =
+    answer.match(
+      /KEY POINTS\s*([\s\S]*?)(?=FLASHCARDS|$)/i
+    );
+
+
+  const keyPoints =
     keyPointsMatch
       ? keyPointsMatch[1].trim()
       : "No key points were generated.";
@@ -1590,7 +1586,13 @@ function parseAIResponse(answer) {
   flashcardOutput.innerHTML = "";
 
 
-  if (!flashcardsMatch) {
+  const flashcardSection =
+    answer.match(
+      /FLASHCARDS\s*([\s\S]*)/i
+    );
+
+
+  if (!flashcardSection) {
 
     flashcardOutput.innerHTML =
       '<div class="card"><p class="small">No flashcards were generated.</p></div>';
@@ -1601,28 +1603,14 @@ function parseAIResponse(answer) {
 
 
   const flashcardText =
-    flashcardsMatch[1];
+    flashcardSection[1];
 
-
-  /*
-    Find every Q/A pair.
-
-    This accepts:
-    FLASHCARD 1
-    Q: ...
-    A: ...
-
-    FLASHCARD 2
-    Q: ...
-    A: ...
-  */
 
   const flashcardPattern =
     /FLASHCARD\s*\d+\s*[\r\n]+Q:\s*([\s\S]*?)\s*A:\s*([\s\S]*?)(?=\s*FLASHCARD\s*\d+|$)/gi;
 
 
   let match;
-
   let count = 0;
 
 
@@ -1744,17 +1732,17 @@ function parseAIResponse(answer) {
 
 function speakNotes() {
 
-  const notesElement =
+  const element =
     document.getElementById("notesText");
 
 
-  if (!notesElement) {
+  if (!element) {
     return;
   }
 
 
   const text =
-    notesElement.innerText.trim();
+    element.innerText.trim();
 
 
   if (!text) {
@@ -1766,26 +1754,30 @@ function speakNotes() {
 
 
   /*
-    Split very long notes into smaller
-    pieces so the browser can speak them
-    more reliably.
+    Use simple sentence splitting.
+    This avoids browser compatibility problems.
   */
+
+  const sentences =
+    text.split(/[.!?]+/);
+
 
   const chunks = [];
 
-
-  const sentences =
-    text.split(
-      /(?<=[.!?])\s+/
-    );
-
-
-  let current =
-    "";
+  let current = "";
 
 
   sentences.forEach(
     sentence => {
+
+      sentence =
+        sentence.trim();
+
+
+      if (!sentence) {
+        return;
+      }
+
 
       if (
         (current + " " + sentence).length
@@ -1793,10 +1785,13 @@ function speakNotes() {
       ) {
 
         if (current.trim()) {
+
           chunks.push(
             current.trim()
           );
+
         }
+
 
         current =
           sentence;
@@ -1829,7 +1824,9 @@ function speakNotes() {
     if (
       index >= chunks.length
     ) {
+
       return;
+
     }
 
 
@@ -1898,66 +1895,6 @@ function stopSpeech() {
 
 }
 
-/* AUDIO */
-
-function speakNotes() {
-
-  const element =
-    document.getElementById("notesText");
-
-  if (!element) {
-    return;
-  }
-
-
-  const text =
-    element.innerText;
-
-
-  if (!text.trim()) {
-    return;
-  }
-
-
-  speechSynthesis.cancel();
-
-
-  const speech =
-    new SpeechSynthesisUtterance(text);
-
-
-  speech.rate = 0.9;
-  speech.pitch = 1;
-
-
-  speechSynthesis.speak(
-    speech
-  );
-
-}
-
-
-function pauseSpeech() {
-
-  speechSynthesis.pause();
-
-}
-
-
-function resumeSpeech() {
-
-  speechSynthesis.resume();
-
-}
-
-
-function stopSpeech() {
-
-  speechSynthesis.cancel();
-
-}
-
-
 /* DRAG AND DROP */
 
 const uploadArea =
@@ -1966,57 +1903,62 @@ const uploadArea =
   );
 
 
-uploadArea.addEventListener(
-  "dragover",
-  event => {
+if (uploadArea) {
 
-    event.preventDefault();
+  uploadArea.addEventListener(
+    "dragover",
+    event => {
 
-    uploadArea.classList.add(
-      "dragging"
-    );
+      event.preventDefault();
 
-  }
-);
-
-
-uploadArea.addEventListener(
-  "dragleave",
-  () => {
-
-    uploadArea.classList.remove(
-      "dragging"
-    );
-
-  }
-);
-
-
-uploadArea.addEventListener(
-  "drop",
-  event => {
-
-    event.preventDefault();
-
-    uploadArea.classList.remove(
-      "dragging"
-    );
-
-
-    const files =
-      event.dataTransfer.files;
-
-
-    if (files.length) {
-
-      document.getElementById(
-        "fileInput"
-      ).files = files;
+      uploadArea.classList.add(
+        "dragging"
+      );
 
     }
+  );
 
-  }
-);
+
+  uploadArea.addEventListener(
+    "dragleave",
+    () => {
+
+      uploadArea.classList.remove(
+        "dragging"
+      );
+
+    }
+  );
+
+
+  uploadArea.addEventListener(
+    "drop",
+    event => {
+
+      event.preventDefault();
+
+      uploadArea.classList.remove(
+        "dragging"
+      );
+
+
+      const files =
+        event.dataTransfer.files;
+
+
+      if (files.length) {
+
+        document.getElementById(
+          "fileInput"
+        ).files =
+          files;
+
+      }
+
+    }
+  );
+
+}
 
 </script>
 
