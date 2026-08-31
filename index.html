@@ -12,57 +12,149 @@
   padding: 0;
 }
 
+:root {
+  --bg: #090b10;
+  --panel: #10131a;
+  --panel-soft: #141821;
+  --border: #252a34;
+  --border-soft: #1d212b;
+  --text: #eeeeee;
+  --muted: #9298a5;
+  --muted-2: #676d79;
+  --hover: #191e27;
+  --accent: #d9dce3;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: Arial, sans-serif;
-  background: #0b0d12;
-  color: #eeeeee;
+  background: var(--bg);
+  color: var(--text);
   min-height: 100vh;
 }
 
+/* FIXED HEADER */
+
 header {
-  padding: 22px;
-  border-bottom: 1px solid #252832;
-  background: #10131a;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 78px;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 28px;
+
+  background: rgba(16, 19, 26, 0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.25);
 }
 
 .logo {
-  font-size: 25px;
-  font-weight: bold;
-  letter-spacing: 3px;
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: 4px;
 }
 
 .tagline {
-  margin-top: 5px;
-  color: #9b9eaa;
-  font-size: 13px;
+  margin-left: 16px;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.4px;
 }
 
-nav {
+/* SIDEBAR */
+
+.sidebar {
+  position: fixed;
+  top: 78px;
+  left: 0;
+  bottom: 0;
+  width: 220px;
+
+  padding: 22px 14px;
+
+  background: #0d1016;
+  border-right: 1px solid var(--border-soft);
+
+  z-index: 900;
+}
+
+.sidebar-title {
+  color: var(--muted-2);
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+
+  padding: 0 12px 10px;
+}
+
+.sidebar button {
+  width: 100%;
+
   display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding: 12px;
-  background: #0f1117;
+  align-items: center;
+
+  background: transparent;
+  border: 1px solid transparent;
+
+  color: var(--muted);
+
+  padding: 11px 12px;
+  margin-bottom: 4px;
+
+  border-radius: 10px;
+
+  text-align: left;
+  font-size: 14px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
-nav button {
-  background: #191c24;
-  border: 1px solid #292d38;
-  color: #ddd;
-  padding: 10px 15px;
-  border-radius: 20px;
-  white-space: nowrap;
+.sidebar button:hover {
+  background: var(--hover);
+  color: var(--text);
 }
 
-nav button:hover {
-  background: #252a35;
+.sidebar button.active {
+  background: #181c24;
+  border-color: var(--border);
+  color: var(--text);
 }
+
+/* MAIN */
 
 main {
-  max-width: 900px;
-  margin: auto;
-  padding: 20px;
+  margin-left: 220px;
+  padding-top: 78px;
+
+  min-height: 100vh;
 }
+
+.content {
+  width: min(900px, 100%);
+  margin: auto;
+  padding: 28px 25px 70px;
+}
+
+/* SECTIONS */
 
 section {
   display: none;
@@ -73,225 +165,541 @@ section.active {
 }
 
 .hero {
-  padding: 25px 5px;
+  padding: 30px 4px 20px;
 }
 
 .hero h1 {
   font-size: 30px;
-  margin-bottom: 8px;
+  line-height: 1.2;
+  margin-bottom: 9px;
 }
 
 .hero p {
-  color: #999eaa;
+  color: var(--muted);
+  line-height: 1.6;
 }
 
+/* CARDS */
+
 .card {
-  background: #141720;
-  border: 1px solid #252936;
-  border-radius: 18px;
-  padding: 20px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
   margin: 15px 0;
 }
 
 .card h2 {
-  margin-bottom: 12px;
+  font-size: 18px;
+  margin-bottom: 10px;
 }
 
-.upload {
-  border: 2px dashed #383d4b;
-  padding: 35px 15px;
+.card p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* EMPTY STATE */
+
+.empty-state {
   text-align: center;
-  border-radius: 18px;
-  margin-top: 15px;
+  padding: 65px 20px;
+}
+
+.empty-state h2 {
+  margin-bottom: 9px;
+  font-size: 20px;
+}
+
+.empty-state p {
+  max-width: 500px;
+  margin: auto;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* UPLOAD */
+
+.upload {
+  border: 1px dashed #3a404c;
+  padding: 48px 20px;
+  text-align: center;
+  border-radius: 15px;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.upload:hover {
+  border-color: #555c69;
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.upload h2 {
+  font-size: 19px;
+  margin-bottom: 8px;
+}
+
+.file-info {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 13px;
 }
 
 input[type="file"] {
-  margin-top: 15px;
+  width: 100%;
+  max-width: 380px;
+  margin-top: 18px;
+
+  color: var(--muted);
+  font-size: 13px;
 }
 
-button {
+input[type="file"]::file-selector-button {
+  background: #1a1e27;
+  color: var(--text);
+
+  border: 1px solid var(--border);
+
+  padding: 9px 12px;
+  margin-right: 10px;
+
+  border-radius: 8px;
+
   cursor: pointer;
 }
 
 .primary {
-  background: #d9d9df;
-  color: #101116;
+  background: var(--accent);
+  color: #0b0d12;
+
   border: none;
+
   padding: 12px 18px;
-  border-radius: 12px;
-  font-weight: bold;
-  margin-top: 12px;
+  border-radius: 10px;
+
+  font-weight: 700;
+  font-size: 14px;
+
+  cursor: pointer;
+
+  margin-top: 18px;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
+
+.primary:hover {
+  opacity: 0.88;
+}
+
+.primary:active {
+  transform: scale(0.98);
+}
+
+.primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* STATUS */
+
+.status {
+  margin-top: 15px;
+  min-height: 20px;
+
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.status.error {
+  color: #d98c8c;
+}
+
+.status.success {
+  color: #aeb7b0;
+}
+
+/* NOTES */
 
 textarea {
   width: 100%;
-  min-height: 180px;
-  background: #0d0f14;
-  color: #eee;
-  border: 1px solid #303441;
-  border-radius: 12px;
-  padding: 15px;
+  min-height: 300px;
+
+  background: #0b0e13;
+  color: var(--text);
+
+  border: 1px solid #303541;
+  border-radius: 11px;
+
+  padding: 16px;
+
   resize: vertical;
+
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.7;
+
+  outline: none;
 }
 
-.flashcard {
-  background: #191c25;
-  border-radius: 15px;
-  padding: 20px;
-  margin-top: 12px;
-}
-
-.flashcard .answer {
-  margin-top: 15px;
-  color: #aaa;
-  display: none;
-}
-
-.plan-item {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 14px;
-  border-bottom: 1px solid #292d36;
-}
-
-.progress {
-  height: 8px;
-  background: #292d35;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-top: 12px;
-}
-
-.progress div {
-  height: 100%;
-  width: 35%;
-  background: #aaa;
-}
-
-.small {
-  color: #888e9b;
-  font-size: 13px;
+textarea:focus {
+  border-color: #4a515e;
 }
 
 .audio-controls {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
+
+  margin-top: 12px;
 }
 
 .audio-controls button {
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid #303441;
-  background: #191c24;
-  color: white;
+  padding: 9px 13px;
+
+  border-radius: 9px;
+
+  border: 1px solid var(--border);
+
+  background: #181c24;
+  color: var(--text);
+
+  cursor: pointer;
 }
 
-footer {
+.audio-controls button:hover {
+  background: #20252f;
+}
+
+/* KEY POINTS */
+
+.key-points {
+  padding-left: 20px;
+  color: var(--muted);
+
+  line-height: 2;
+}
+
+/* FLASHCARDS */
+
+.flashcard {
+  background: var(--panel);
+  border: 1px solid var(--border);
+
+  border-radius: 14px;
+
+  padding: 20px;
+  margin-top: 12px;
+}
+
+.flashcard h2 {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.flashcard .answer {
+  margin-top: 14px;
+
+  color: var(--muted);
+
+  line-height: 1.6;
+
+  display: none;
+}
+
+/* LOADING */
+
+.loading {
+  display: none;
+
   text-align: center;
-  color: #666b77;
+
   padding: 30px;
-  font-size: 12px;
+
+  color: var(--muted);
+}
+
+.loading.active {
+  display: block;
+}
+
+.loader {
+  width: 24px;
+  height: 24px;
+
+  border: 2px solid #303541;
+  border-top-color: #cfd2d8;
+
+  border-radius: 50%;
+
+  animation: spin 0.8s linear infinite;
+
+  margin: 0 auto 12px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* FOOTER */
+
+footer {
+  color: var(--muted-2);
+
+  padding: 25px;
+
+  text-align: center;
+
+  font-size: 11px;
+}
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+  header {
+    height: 68px;
+    padding: 0 18px;
+  }
+
+  .logo {
+    font-size: 18px;
+    letter-spacing: 3px;
+  }
+
+  .tagline {
+    display: none;
+  }
+
+  .sidebar {
+    top: 68px;
+    width: 68px;
+
+    padding: 15px 8px;
+  }
+
+  .sidebar-title {
+    display: none;
+  }
+
+  .sidebar button {
+    justify-content: center;
+
+    padding: 12px 4px;
+
+    font-size: 0;
+  }
+
+  .sidebar button::before {
+    content: "•";
+
+    font-size: 18px;
+
+    color: var(--muted);
+  }
+
+  .sidebar button.active::before {
+    color: var(--text);
+  }
+
+  main {
+    margin-left: 68px;
+    padding-top: 68px;
+  }
+
+  .content {
+    padding: 18px 14px 50px;
+  }
+
+  .hero {
+    padding-top: 22px;
+  }
+
+  .hero h1 {
+    font-size: 25px;
+  }
+
+  .card {
+    padding: 17px;
+  }
+
+  .upload {
+    padding: 35px 14px;
+  }
+}
+
+@media (max-width: 430px) {
+
+  .sidebar {
+    width: 58px;
+  }
+
+  main {
+    margin-left: 58px;
+  }
+
+  .content {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 }
 </style>
 </head>
 
 <body>
 
+<!-- FIXED HEADER -->
+
 <header>
   <div class="logo">MENTALIST</div>
   <div class="tagline">Observe, Interpret, Understand</div>
 </header>
 
-<nav>
-  <button onclick="showPage('dashboard')">🏠 Home</button>
-  <button onclick="showPage('upload')">📤 Upload</button>
-  <button onclick="showPage('notes')">🧠 Notes</button>
-  <button onclick="showPage('flashcards')">🃏 Flashcards</button>
-  <button onclick="showPage('planner')">📅 Study Plan</button>
-</nav>
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+  <div class="sidebar-title">
+    Workspace
+  </div>
+
+  <button
+    class="active"
+    onclick="showPage('dashboard', this)">
+    Home
+  </button>
+
+  <button
+    onclick="showPage('upload', this)">
+    Analyze
+  </button>
+
+  <button
+    onclick="showPage('notes', this)">
+    Notes
+  </button>
+
+  <button
+    onclick="showPage('flashcards', this)">
+    Flashcards
+  </button>
+
+  <button
+    onclick="showPage('planner', this)">
+    Study Plan
+  </button>
+
+  <button
+    onclick="showPage('settings', this)">
+    Settings
+  </button>
+
+</aside>
+
+
+<!-- MAIN -->
 
 <main>
 
-<!-- DASHBOARD -->
+<div class="content">
+
+
+<!-- HOME -->
+
 <section id="dashboard" class="active">
 
   <div class="hero">
     <h1>Welcome to Mentalist.</h1>
-    <p>Your study space for understanding, remembering and mastering.</p>
-  </div>
 
-  <div class="card">
-    <h2>📚 Continue studying</h2>
-    <p>Biology — Cell Structure</p>
-
-    <div class="progress">
-      <div></div>
-    </div>
-
-    <p class="small" style="margin-top:8px;">
-      35% completed
+    <p>
+      Your study space for understanding,
+      remembering and mastering.
     </p>
   </div>
 
-  <div class="card">
-    <h2>🧠 Today's focus</h2>
+  <div class="card empty-state">
 
-    <div class="plan-item">
-      <span>Read simplified notes</span>
-      <span>25 min</span>
-    </div>
+    <h2>Your workspace is ready.</h2>
 
-    <div class="plan-item">
-      <span>Review flashcards</span>
-      <span>10 min</span>
-    </div>
+    <p>
+      Upload study material to begin an analysis.
+      Mentalist will turn your material into
+      understandable notes and study resources.
+    </p>
 
-    <div class="plan-item">
-      <span>Quick revision</span>
-      <span>10 min</span>
-    </div>
+    <button
+      class="primary"
+      onclick="showPage('upload')">
+      Analyze Material
+    </button>
+
   </div>
 
 </section>
 
 
-<!-- UPLOAD -->
+<!-- UPLOAD / ANALYSIS -->
+
 <section id="upload">
 
   <div class="hero">
-    <h1>📤 Upload Study Material</h1>
-    <p>Give Mentalist something to understand.</p>
+
+    <h1>Analyze Material</h1>
+
+    <p>
+      Upload your study material and Mentalist
+      will analyze it.
+    </p>
+
   </div>
 
   <div class="card">
 
     <div class="upload">
 
-      <h2>Drop your file here</h2>
+      <h2>Select study material</h2>
 
       <p class="small">
-        PDF, TXT and other study materials
+        TXT files are currently supported.
+        PDF and Word support can be added next.
       </p>
 
       <input
         type="file"
         id="fileInput"
-        accept=".pdf,.txt,.doc,.docx"
-      >
+        accept=".txt,text/plain">
 
       <br>
 
-      <button class="primary" onclick="processFile()">
-        🧠 Analyze Material
+      <button
+        class="primary"
+        id="analyzeButton"
+        onclick="processFile()">
+        Analyze Material
       </button>
 
-      <p id="fileStatus" class="small" style="margin-top:15px;"></p>
+      <div
+        id="fileStatus"
+        class="status">
+      </div>
 
     </div>
+
+  </div>
+
+  <div
+    id="loading"
+    class="loading">
+
+    <div class="loader"></div>
+
+    <p>
+      Mentalist is analyzing your material.
+    </p>
 
   </div>
 
@@ -299,38 +707,44 @@ footer {
 
 
 <!-- NOTES -->
+
 <section id="notes">
 
   <div class="hero">
-    <h1>🧠 Simplified Notes</h1>
-    <p>Understand the material in simple language.</p>
+
+    <h1>Simplified Notes</h1>
+
+    <p>
+      Your AI-generated notes will appear here
+      after you analyze study material.
+    </p>
+
   </div>
 
   <div class="card">
 
-    <textarea id="notesText">
-Photosynthesis is the process plants use to make their own food.
-
-Plants use three important things:
-
-1. Sunlight
-2. Water
-3. Carbon dioxide
-
-The plant uses these ingredients to produce food and releases oxygen.
-
-Think of a plant like a tiny food factory powered by sunlight.
+    <textarea
+      id="notesText"
+      placeholder="Your generated notes will appear here.">
     </textarea>
 
     <div class="audio-controls">
 
-      <button onclick="speakNotes()">🔊 Play</button>
+      <button onclick="speakNotes()">
+        Play
+      </button>
 
-      <button onclick="pauseSpeech()">⏸ Pause</button>
+      <button onclick="pauseSpeech()">
+        Pause
+      </button>
 
-      <button onclick="resumeSpeech()">▶ Resume</button>
+      <button onclick="resumeSpeech()">
+        Resume
+      </button>
 
-      <button onclick="stopSpeech()">⏹ Stop</button>
+      <button onclick="stopSpeech()">
+        Stop
+      </button>
 
     </div>
 
@@ -338,19 +752,12 @@ Think of a plant like a tiny food factory powered by sunlight.
 
   <div class="card">
 
-    <h2>🎯 Key Points</h2>
+    <h2>Key Points</h2>
 
-    <ul style="line-height:2; padding-left:20px;">
-      <li>Plants make their own food.</li>
-      <li>Sunlight provides energy.</li>
-      <li>Water is needed.</li>
-      <li>Carbon dioxide is needed.</li>
-      <li>Oxygen is released.</li>
+    <ul
+      id="keyPoints"
+      class="key-points">
     </ul>
-
-    <button class="primary" onclick="speakKeyPoints()">
-      🔊 Listen to Key Points
-    </button>
 
   </div>
 
@@ -358,39 +765,32 @@ Think of a plant like a tiny food factory powered by sunlight.
 
 
 <!-- FLASHCARDS -->
+
 <section id="flashcards">
 
   <div class="hero">
-    <h1>🃏 Flashcards</h1>
-    <p>Test your memory instead of just rereading.</p>
-  </div>
 
-  <div class="flashcard">
+    <h1>Flashcards</h1>
 
-    <h2>What is photosynthesis?</h2>
-
-    <div class="answer" id="answer1">
-      Photosynthesis is how plants make their own food using
-      sunlight, water and carbon dioxide.
-    </div>
-
-    <button class="primary" onclick="toggleAnswer('answer1')">
-      Show Answer
-    </button>
+    <p>
+      Test your understanding instead of
+      simply rereading.
+    </p>
 
   </div>
 
-  <div class="flashcard">
+  <div id="flashcardsContainer">
 
-    <h2>What does photosynthesis produce?</h2>
+    <div class="card empty-state">
 
-    <div class="answer" id="answer2">
-      Plants produce food and release oxygen.
+      <h2>No flashcards yet.</h2>
+
+      <p>
+        Analyze study material to generate
+        flashcards.
+      </p>
+
     </div>
-
-    <button class="primary" onclick="toggleAnswer('answer2')">
-      Show Answer
-    </button>
 
   </div>
 
@@ -398,64 +798,112 @@ Think of a plant like a tiny food factory powered by sunlight.
 
 
 <!-- PLANNER -->
+
 <section id="planner">
 
   <div class="hero">
-    <h1>📅 Study Plan</h1>
-    <p>Your timetable. Your rules.</p>
+
+    <h1>Study Plan</h1>
+
+    <p>
+      Your timetable. Your rules.
+    </p>
+
   </div>
 
   <div class="card">
 
-    <div class="plan-item">
-      <span>Monday — Biology</span>
-      <span>25 min</span>
-    </div>
+    <div class="empty-state">
 
-    <div class="plan-item">
-      <span>Tuesday — Mathematics</span>
-      <span>30 min</span>
-    </div>
+      <h2>Your study plan is empty.</h2>
 
-    <div class="plan-item">
-      <span>Wednesday — English</span>
-      <span>20 min</span>
-    </div>
+      <p>
+        Study planning tools can be added
+        here once your analysis system is ready.
+      </p>
 
-    <div class="plan-item">
-      <span>Thursday — Biology revision</span>
-      <span>25 min</span>
     </div>
-
-    <div class="plan-item">
-      <span>Friday — Flashcards</span>
-      <span>15 min</span>
-    </div>
-
-    <button class="primary" onclick="alert('Planner editing will be added in the next version!')">
-      ✏️ Edit Timetable
-    </button>
 
   </div>
 
 </section>
 
-</main>
+
+<!-- SETTINGS -->
+
+<section id="settings">
+
+  <div class="hero">
+
+    <h1>Settings</h1>
+
+    <p>
+      Customize your Mentalist experience.
+    </p>
+
+  </div>
+
+  <div class="card">
+
+    <h2>Interface</h2>
+
+    <p>
+      Mentalist is currently using the default
+      dark interface.
+    </p>
+
+  </div>
+
+  <div class="card">
+
+    <h2>AI Analysis</h2>
+
+    <p>
+      AI analysis is powered through your
+      secure Vercel API connection.
+    </p>
+
+  </div>
+
+</section>
+
 
 <footer>
-  Mentalist • Observe, Interpret, Understand
+  Mentalist — Observe, Interpret, Understand
 </footer>
+
+</div>
+
+</main>
 
 
 <script>
 
-function showPage(page) {
+/* PAGE NAVIGATION */
 
-  document.querySelectorAll("section").forEach(section => {
-    section.classList.remove("active");
-  });
+function showPage(page, button) {
 
-  document.getElementById(page).classList.add("active");
+  document
+    .querySelectorAll("section")
+    .forEach(section => {
+      section.classList.remove("active");
+    });
+
+  const target = document.getElementById(page);
+
+  if (target) {
+    target.classList.add("active");
+  }
+
+  document
+    .querySelectorAll(".sidebar button")
+    .forEach(btn => {
+      btn.classList.remove("active");
+    });
+
+  if (button) {
+    button.classList.add("active");
+  }
 
   window.scrollTo({
     top: 0,
@@ -464,79 +912,455 @@ function showPage(page) {
 }
 
 
-function processFile() {
+/* FILE ANALYSIS */
 
-  const file = document.getElementById("fileInput").files[0];
+async function processFile() {
+
+  const fileInput =
+    document.getElementById("fileInput");
+
+  const status =
+    document.getElementById("fileStatus");
+
+  const button =
+    document.getElementById("analyzeButton");
+
+  const loading =
+    document.getElementById("loading");
+
+  const file =
+    fileInput.files[0];
 
   if (!file) {
-    document.getElementById("fileStatus").innerText =
-      "Please choose a file first.";
+
+    status.className = "status error";
+
+    status.innerText =
+      "Please select a file first.";
+
     return;
   }
 
-  document.getElementById("fileStatus").innerText =
-    "✓ " + file.name + " uploaded. AI analysis will be connected next.";
 
-  showPage("notes");
+  if (!file.name.toLowerCase().endsWith(".txt")) {
+
+    status.className = "status error";
+
+    status.innerText =
+      "This version supports TXT files. PDF and Word support will be added next.";
+
+    return;
+  }
+
+
+  try {
+
+    button.disabled = true;
+
+    status.className = "status";
+
+    status.innerText =
+      "Reading your file...";
+
+    loading.classList.add("active");
+
+
+    const text =
+      await file.text();
+
+
+    if (!text.trim()) {
+
+      throw new Error(
+        "The selected file appears to be empty."
+      );
+    }
+
+
+    status.innerText =
+      "Sending material to Mentalist...";
+
+
+    const prompt = `
+
+You are Mentalist, an AI study assistant.
+
+Analyze the study material below.
+
+Create a useful study resource for the student.
+
+Return your response using exactly these three sections:
+
+NOTES:
+Write clear, simplified notes that explain the material accurately.
+Use headings and bullet points where useful.
+
+KEY POINTS:
+Provide the most important facts or concepts as bullet points.
+
+FLASHCARDS:
+Create 5 useful flashcards.
+For each flashcard use this format:
+
+Q: question
+A: answer
+
+Do not assume the material is Biology.
+Analyze whatever subject the uploaded material actually contains.
+
+Study material:
+
+${text}
+`;
+
+
+    const response =
+      await fetch("/api/chat", {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type":
+            "application/json"
+        },
+
+        body: JSON.stringify({
+          message: prompt
+        })
+
+      });
+
+
+    const data =
+      await response.json();
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.error ||
+        "The AI request failed."
+      );
+    }
+
+
+    if (!data.answer) {
+
+      throw new Error(
+        "The AI returned an empty response."
+      );
+    }
+
+
+    parseAIResponse(data.answer);
+
+
+    status.className =
+      "status success";
+
+    status.innerText =
+      "Analysis complete.";
+
+    loading.classList.remove("active");
+
+
+    showPage("notes");
+
+  } catch (error) {
+
+    console.error(error);
+
+    loading.classList.remove("active");
+
+    status.className =
+      "status error";
+
+    status.innerText =
+      error.message ||
+      "Something went wrong while analyzing the file.";
+
+  } finally {
+
+    button.disabled = false;
+
+  }
 }
 
 
+/* AI RESPONSE PARSER */
+
+function parseAIResponse(answer) {
+
+  let notes = "";
+  let keyPoints = [];
+  let flashcards = [];
+
+
+  const notesMatch =
+    answer.match(
+      /NOTES:\s*([\s\S]*?)(?=\n\s*KEY POINTS:|\n\s*FLASHCARDS:|$)/i
+    );
+
+
+  const keyPointsMatch =
+    answer.match(
+      /KEY POINTS:\s*([\s\S]*?)(?=\n\s*FLASHCARDS:|$)/i
+    );
+
+
+  const flashcardsMatch =
+    answer.match(
+      /FLASHCARDS:\s*([\s\S]*)/i
+    );
+
+
+  if (notesMatch) {
+    notes = notesMatch[1].trim();
+  } else {
+    notes = answer.trim();
+  }
+
+
+  if (keyPointsMatch) {
+
+    keyPoints =
+      keyPointsMatch[1]
+        .split("\n")
+        .map(line =>
+          line
+            .replace(/^[-*•]\s*/, "")
+            .trim()
+        )
+        .filter(Boolean);
+
+  }
+
+
+  if (flashcardsMatch) {
+
+    const raw =
+      flashcardsMatch[1]
+        .trim();
+
+
+    const matches =
+      raw.match(
+        /Q:\s*(.*?)\s*A:\s*([\s\S]*?)(?=\n\s*Q:|$)/gi
+      );
+
+
+    if (matches) {
+
+      matches.forEach(item => {
+
+        const question =
+          item.match(
+            /Q:\s*(.*?)(?=\s*A:)/is
+          );
+
+        const answerMatch =
+          item.match(
+            /A:\s*([\s\S]*)/i
+          );
+
+
+        if (
+          question &&
+          answerMatch
+        ) {
+
+          flashcards.push({
+            question:
+              question[1].trim(),
+
+            answer:
+              answerMatch[1].trim()
+          });
+
+        }
+
+      });
+
+    }
+
+  }
+
+
+  document.getElementById(
+    "notesText"
+  ).value = notes;
+
+
+  const keyPointsContainer =
+    document.getElementById(
+      "keyPoints"
+    );
+
+  keyPointsContainer.innerHTML = "";
+
+
+  keyPoints.forEach(point => {
+
+    const li =
+      document.createElement("li");
+
+    li.textContent = point;
+
+    keyPointsContainer.appendChild(li);
+
+  });
+
+
+  renderFlashcards(flashcards);
+}
+
+
+/* FLASHCARDS */
+
+function renderFlashcards(cards) {
+
+  const container =
+    document.getElementById(
+      "flashcardsContainer"
+    );
+
+
+  if (!cards.length) {
+
+    container.innerHTML = `
+      <div class="card empty-state">
+        <h2>No flashcards were generated.</h2>
+        <p>
+          Try analyzing the material again.
+        </p>
+      </div>
+    `;
+
+    return;
+  }
+
+
+  container.innerHTML = "";
+
+
+  cards.forEach((card, index) => {
+
+    const element =
+      document.createElement("div");
+
+    element.className =
+      "flashcard";
+
+
+    element.innerHTML = `
+      <h2>
+        ${escapeHTML(card.question)}
+      </h2>
+
+      <div
+        class="answer"
+        id="answer-${index}">
+        ${escapeHTML(card.answer)}
+      </div>
+
+      <button
+        class="primary"
+        onclick="toggleAnswer('answer-${index}')">
+        Show Answer
+      </button>
+    `;
+
+
+    container.appendChild(element);
+
+  });
+
+}
+
+
+/* SAFE TEXT DISPLAY */
+
+function escapeHTML(text) {
+
+  const div =
+    document.createElement("div");
+
+  div.textContent = text;
+
+  return div.innerHTML;
+}
+
+
+/* FLASHCARD ANSWERS */
+
+function toggleAnswer(id) {
+
+  const answer =
+    document.getElementById(id);
+
+  if (!answer) return;
+
+
+  if (
+    answer.style.display === "block"
+  ) {
+
+    answer.style.display = "none";
+
+  } else {
+
+    answer.style.display = "block";
+
+  }
+
+}
+
+
+/* TEXT TO SPEECH */
+
 function speakNotes() {
 
-  const text = document.getElementById("notesText").value;
+  const text =
+    document.getElementById(
+      "notesText"
+    ).value;
+
+
+  if (!text.trim()) return;
+
 
   speechSynthesis.cancel();
 
-  const speech = new SpeechSynthesisUtterance(text);
+
+  const speech =
+    new SpeechSynthesisUtterance(text);
+
 
   speech.rate = 0.9;
   speech.pitch = 1;
 
-  speechSynthesis.speak(speech);
-}
-
-
-function speakKeyPoints() {
-
-  const text =
-  "Key points. Plants make their own food. " +
-  "Sunlight provides energy. Water is needed. " +
-  "Carbon dioxide is needed. Oxygen is released.";
-
-  speechSynthesis.cancel();
-
-  const speech = new SpeechSynthesisUtterance(text);
-
-  speech.rate = 0.9;
 
   speechSynthesis.speak(speech);
 }
 
 
 function pauseSpeech() {
+
   speechSynthesis.pause();
+
 }
 
 
 function resumeSpeech() {
+
   speechSynthesis.resume();
+
 }
 
 
 function stopSpeech() {
+
   speechSynthesis.cancel();
-}
-
-
-function toggleAnswer(id) {
-
-  const answer = document.getElementById(id);
-
-  if (answer.style.display === "block") {
-    answer.style.display = "none";
-  } else {
-    answer.style.display = "block";
-  }
 
 }
 
