@@ -532,6 +532,40 @@ section.active {
 
 /* NOTES */
 
+.audio-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  margin-top: 22px;
+}
+
+.secondary-button {
+  background: var(--panel-soft);
+
+  color: var(--text);
+
+  border: 1px solid var(--border);
+
+  padding: 10px 15px;
+
+  border-radius: 10px;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.secondary-button:hover {
+  background: var(--sidebar-hover);
+
+  transform: translateY(-1px);
+}
+
 .notes-content {
   background: var(--panel);
 
