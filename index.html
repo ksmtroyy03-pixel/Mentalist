@@ -27,6 +27,78 @@
   --shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
 
+/* THEMES */
+
+body[data-theme="dark"] {
+  --bg: #18191b;
+  --panel: #222427;
+  --panel-soft: #2b2e32;
+  --border: #3a3d42;
+  --text: #f1f1f1;
+  --muted: #a7a7a7;
+  --sidebar: #202225;
+  --sidebar-hover: #303338;
+  --button: #f1f1f1;
+  --button-text: #18191b;
+  --shadow: 0 2px 12px rgba(0,0,0,0.25);
+}
+
+body[data-theme="midnight"] {
+  --bg: #10131a;
+  --panel: #181c25;
+  --panel-soft: #202532;
+  --border: #303746;
+  --text: #eef2f7;
+  --muted: #9da6b5;
+  --sidebar: #141821;
+  --sidebar-hover: #252b38;
+  --button: #eef2f7;
+  --button-text: #10131a;
+  --shadow: 0 2px 14px rgba(0,0,0,0.35);
+}
+
+body[data-theme="ocean"] {
+  --bg: #eef7fa;
+  --panel: #ffffff;
+  --panel-soft: #e0f0f4;
+  --border: #c5dfe6;
+  --text: #17343d;
+  --muted: #607d85;
+  --sidebar: #e5f2f5;
+  --sidebar-hover: #d2e8ed;
+  --button: #17343d;
+  --button-text: #ffffff;
+  --shadow: 0 2px 12px rgba(23,52,61,0.08);
+}
+
+body[data-theme="forest"] {
+  --bg: #f1f6f1;
+  --panel: #ffffff;
+  --panel-soft: #e3eee4;
+  --border: #cbdccb;
+  --text: #203326;
+  --muted: #66766a;
+  --sidebar: #e7f0e7;
+  --sidebar-hover: #d7e5d8;
+  --button: #203326;
+  --button-text: #ffffff;
+  --shadow: 0 2px 12px rgba(32,51,38,0.08);
+}
+
+body[data-theme="rose"] {
+  --bg: #faf3f5;
+  --panel: #ffffff;
+  --panel-soft: #f2e3e7;
+  --border: #e2cbd1;
+  --text: #39262c;
+  --muted: #806b71;
+  --sidebar: #f5e8eb;
+  --sidebar-hover: #ead8dd;
+  --button: #39262c;
+  --button-text: #ffffff;
+  --shadow: 0 2px 12px rgba(57,38,44,0.08);
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -1145,21 +1217,74 @@ footer {
       </div>
 
 
-      <div class="card">
+<div class="card">
 
-        <h2>
-          Appearance
-        </h2>
+  <h2>
+    Appearance
+  </h2>
 
-        <p
-          class="small"
-          style="margin-top:8px;">
+  <p
+    class="small"
+    style="margin-top:8px;">
 
-          Theme customization is coming soon.
+    Choose how Mentalist looks.
 
-        </p>
+  </p>
 
-      </div>
+  <div style="margin-top:20px;">
+
+    <label
+      for="themeSelect"
+      class="small"
+      style="display:block; margin-bottom:8px;">
+
+      Theme
+
+    </label>
+
+    <select
+      id="themeSelect"
+      style="
+        width:100%;
+        padding:12px 14px;
+        border:1px solid var(--border);
+        border-radius:10px;
+        background:var(--panel-soft);
+        color:var(--text);
+        font-size:14px;
+        cursor:pointer;
+        outline:none;
+      ">
+
+      <option value="light">
+         Light
+      </option>
+
+      <option value="dark">
+         Dark
+      </option>
+
+      <option value="midnight">
+         Midnight
+      </option>
+
+      <option value="ocean">
+         Ocean
+      </option>
+
+      <option value="forest">
+         Forest
+      </option>
+
+      <option value="rose">
+         Rose
+      </option>
+
+    </select>
+
+  </div>
+
+</div>
 
     </section>
 
@@ -2179,6 +2304,67 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 });
+
+/* THEME SYSTEM */
+
+const themeSelect =
+  document.getElementById("themeSelect");
+
+
+function applyTheme(theme) {
+
+  if (theme === "light") {
+
+    document.body.removeAttribute(
+      "data-theme"
+    );
+
+  } else {
+
+    document.body.setAttribute(
+      "data-theme",
+      theme
+    );
+
+  }
+
+  localStorage.setItem(
+    "mentalist-theme",
+    theme
+  );
+
+}
+
+
+if (themeSelect) {
+
+  const savedTheme =
+    localStorage.getItem(
+      "mentalist-theme"
+    ) || "light";
+
+
+  themeSelect.value =
+    savedTheme;
+
+
+  applyTheme(
+    savedTheme
+  );
+
+
+  themeSelect.addEventListener(
+    "change",
+    function () {
+
+      applyTheme(
+        themeSelect.value
+      );
+
+    }
+  );
+
+}
 </script>
 
 </body>
