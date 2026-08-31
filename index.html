@@ -1999,5 +1999,79 @@ if (uploadArea) {
 
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const sidebar = document.getElementById("sidebar");
+  const menuButton = document.getElementById("menuButton");
+  const buttons = document.querySelectorAll(".side-button");
+
+
+  /* MENU */
+
+  if (menuButton && sidebar) {
+
+    menuButton.addEventListener("click", function () {
+
+      sidebar.classList.toggle("open");
+
+    });
+
+  }
+
+
+  /* SIDEBAR NAVIGATION */
+
+  buttons.forEach(function (button) {
+
+    button.addEventListener("click", function () {
+
+      const page = button.getAttribute("data-page");
+
+      if (!page) {
+        return;
+      }
+
+
+      document.querySelectorAll("section").forEach(function (section) {
+
+        section.classList.remove("active");
+
+      });
+
+
+      const target = document.getElementById(page);
+
+      if (target) {
+
+        target.classList.add("active");
+
+      }
+
+
+      buttons.forEach(function (item) {
+
+        item.classList.remove("active");
+
+      });
+
+
+      button.classList.add("active");
+
+      sidebar.classList.remove("open");
+
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+    });
+
+  }
+
+});
+</script>
+
 </body>
 </html>
