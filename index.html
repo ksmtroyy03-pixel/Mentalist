@@ -2313,7 +2313,22 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("themeSelect");
 
 
+  const themes = [
+    "light",
+    "dark",
+    "midnight",
+    "ocean",
+    "forest",
+    "rose"
+  ];
+
+
   function applyTheme(theme) {
+
+    if (!themes.includes(theme)) {
+      theme = "light";
+    }
+
 
     if (theme === "light") {
 
@@ -2331,6 +2346,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
+    if (themeSelect) {
+
+      themeSelect.value =
+        theme;
+
+    }
+
+
     localStorage.setItem(
       "mentalist-theme",
       theme
@@ -2339,10 +2362,17 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 
-  const savedTheme =
+  let savedTheme =
     localStorage.getItem(
       "mentalist-theme"
-    ) || "light";
+    );
+
+
+  if (!themes.includes(savedTheme)) {
+
+    savedTheme = "light";
+
+  }
 
 
   applyTheme(
@@ -2351,10 +2381,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   if (themeSelect) {
-
-    themeSelect.value =
-      savedTheme;
-
 
     themeSelect.addEventListener(
       "change",
