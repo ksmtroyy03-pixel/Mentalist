@@ -576,6 +576,12 @@ section.active {
   padding: 30px;
 
   box-shadow: var(--shadow);
+
+  max-height: 560px;
+
+  overflow-y: auto;
+
+  scroll-behavior: smooth;
 }
 
 .notes-content h2 {
@@ -742,6 +748,10 @@ footer {
   .card,
   .notes-content {
     padding: 19px;
+  }
+
+  .notes-content {
+  max-height: 500px;
   }
 
   .upload-area {
