@@ -1506,17 +1506,17 @@ ${text}
 function parseAIResponse(answer) {
 
   const notesOutput =
-    document.getElementById("notesOutput");
+    document.getElementById("notesText");
+
+  const keyPointsOutput =
+    document.getElementById("keyPointsOutput");
 
   const flashcardOutput =
     document.getElementById("flashcardOutput");
 
 
-  let notes =
-    answer;
-
-  let keyPoints =
-    "";
+  let notes = answer;
+  let keyPoints = "";
 
 
   const notesMatch =
@@ -1532,23 +1532,39 @@ function parseAIResponse(answer) {
 
 
   if (notesMatch) {
-
     notes =
       notesMatch[1].trim();
-
   }
 
 
   if (keyMatch) {
-
     keyPoints =
       keyMatch[1].trim();
-
   }
 
 
-  let flashcards =
-    [];
+  /*
+    NOTES
+  */
+
+  notesOutput.innerText =
+    notes;
+
+
+  /*
+    KEY POINTS
+  */
+
+  keyPointsOutput.innerText =
+    keyPoints ||
+    "No key points were generated.";
+
+
+  /*
+    FLASHCARDS
+  */
+
+  flashcardOutput.innerHTML = "";
 
 
   const flashcardSection =
@@ -1557,178 +1573,78 @@ function parseAIResponse(answer) {
     );
 
 
-  if (flashcardSection) {
+  if (!flashcardSection) {
 
-    const section =
-      flashcardSection[1];
-
-
-    const matches =
-      section.match(
-        /Q:\s*([\s\S]*?)\s*A:\s*([\s\S]*?)(?=\s*FLASHCARD|\s*$)/gi
-      );
-
-
-    if (matches) {
-
-      matches.forEach(item => {
-
-        const match =
-          item.match(
-            /Q:\s*([\s\S]*?)\s*A:\s*([\s\S]*)/i
-          );
-
-
-        if (match) {
-
-          flashcards.push({
-
-            question:
-              match[1].trim(),
-
-            answer:
-              match[2].trim()
-
-          });
-
-        }
-
-      });
-
-    }
-
-  }
-
-
-  notesOutput.innerHTML = "";
-
-
-  const notesCard =
-    document.createElement("div");
-
-  notesCard.className =
-    "notes-content";
-
-
-  const notesTitle =
-    document.createElement("h2");
-
-  notesTitle.innerText =
-    "Simplified Notes";
-
-
-  const notesBody =
-    document.createElement("div");
-
-  notesBody.className =
-    "notes-text";
-
-  notesBody.innerText =
-    notes;
-
-
-  notesCard.appendChild(
-    notesTitle
-  );
-
-  notesCard.appendChild(
-    notesBody
-  );
-
-
-  notesOutput.appendChild(
-    notesCard
-  );
-
-
-  if (keyPoints) {
-
-    const keyCard =
-      document.createElement("div");
-
-    keyCard.className =
-      "card";
-
-
-    const title =
-      document.createElement("h2");
-
-    title.innerText =
-      "Key Points";
-
-
-    const list =
-      document.createElement("div");
-
-    list.className =
-      "notes-text";
-
-    list.style.marginTop =
-      "15px";
-
-    list.innerText =
-      keyPoints;
-
-
-    keyCard.appendChild(title);
-
-    keyCard.appendChild(list);
-
-    notesOutput.appendChild(
-      keyCard
-    );
-
-  }
-
-
-  flashcardOutput.innerHTML = "";
-
-
-  if (flashcards.length === 0) {
-
-    const empty =
-      document.createElement("div");
-
-    empty.className =
-      "card";
-
-    empty.innerText =
-      "No flashcards were generated.";
-
-    flashcardOutput.appendChild(
-      empty
-    );
+    flashcardOutput.innerHTML =
+      '<div class="card"><p class="small">No flashcards were generated.</p></div>';
 
     return;
-
   }
 
 
-  flashcards.forEach(
-    (card, index) => {
+  const section =
+    flashcardSection[1];
 
-      const element =
-        document.createElement("div");
 
-      element.className =
-        "flashcard";
+  const matches =
+    section.match(
+      /Q:\s*([\s\S]*?)\s*A:\s*([\s\S]*?)(?=\s*FLASHCARD|\s*$)/gi
+    );
+
+
+  if (!matches || matches.length === 0) {
+
+    flashcardOutput.innerHTML =
+      '<div class="card"><p class="small">No flashcards were generated.</p></div>';
+
+    return;
+  }
+
+
+  matches.forEach(
+    (item, index) => {
+
+      const match =
+        item.match(
+          /Q:\s*([\s\S]*?)\s*A:\s*([\s\S]*)/i
+        );
+
+
+      if (!match) {
+        return;
+      }
 
 
       const question =
-        document.createElement("h3");
-
-      question.innerText =
-        card.question;
+        match[1].trim();
 
 
-      const answer =
+      const answerText =
+        match[2].trim();
+
+
+      const card =
         document.createElement("div");
 
-      answer.className =
+      card.className =
+        "flashcard";
+
+
+      const questionElement =
+        document.createElement("h3");
+
+      questionElement.innerText =
+        question;
+
+
+      const answerElement =
+        document.createElement("div");
+
+      answerElement.className =
         "answer";
 
-      answer.innerText =
-        card.answer;
+      answerElement.innerText =
+        answerText;
 
 
       const button =
@@ -1744,13 +1660,13 @@ function parseAIResponse(answer) {
       button.onclick =
         function() {
 
-          answer.classList.toggle(
+          answerElement.classList.toggle(
             "visible"
           );
 
 
           button.innerText =
-            answer.classList.contains(
+            answerElement.classList.contains(
               "visible"
             )
               ? "Hide answer"
@@ -1759,25 +1675,85 @@ function parseAIResponse(answer) {
         };
 
 
-      element.appendChild(
-        question
+      card.appendChild(
+        questionElement
       );
 
-      element.appendChild(
-        answer
+      card.appendChild(
+        answerElement
       );
 
-      element.appendChild(
+      card.appendChild(
         button
       );
 
 
       flashcardOutput.appendChild(
-        element
+        card
       );
 
     }
   );
+
+}
+
+
+/* AUDIO */
+
+function speakNotes() {
+
+  const element =
+    document.getElementById("notesText");
+
+  if (!element) {
+    return;
+  }
+
+
+  const text =
+    element.innerText;
+
+
+  if (!text.trim()) {
+    return;
+  }
+
+
+  speechSynthesis.cancel();
+
+
+  const speech =
+    new SpeechSynthesisUtterance(text);
+
+
+  speech.rate = 0.9;
+  speech.pitch = 1;
+
+
+  speechSynthesis.speak(
+    speech
+  );
+
+}
+
+
+function pauseSpeech() {
+
+  speechSynthesis.pause();
+
+}
+
+
+function resumeSpeech() {
+
+  speechSynthesis.resume();
+
+}
+
+
+function stopSpeech() {
+
+  speechSynthesis.cancel();
 
 }
 
