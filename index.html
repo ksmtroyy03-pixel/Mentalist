@@ -2162,6 +2162,422 @@ function parseAIResponse(answer) {
 
 }
 
+/* PLANNER SYSTEM */
+
+let studySessions =
+  JSON.parse(
+    localStorage.getItem("mentalist-study-plan")
+  ) || [];
+
+
+function saveStudySessions() {
+
+  localStorage.setItem(
+    "mentalist-study-plan",
+    JSON.stringify(studySessions)
+  );
+
+}
+
+
+function addStudySession() {
+
+  const subject =
+    document.getElementById("plannerSubject").value.trim();
+
+  const task =
+    document.getElementById("plannerTask").value.trim();
+
+  const date =
+    document.getElementById("plannerDate").value;
+
+  const time =
+    document.getElementById("plannerTime").value;
+
+  const status =
+    document.getElementById("plannerStatus");
+
+
+  if (!subject || !task || !date || !time) {
+
+    status.className =
+      "status error";
+
+    status.innerText =
+      "Please fill in all fields.";
+
+    return;
+
+  }
+
+
+  const session = {
+
+    id: Date.now(),
+
+    subject: subject,
+
+    task: task,
+
+    date: date,
+
+    time: time,
+
+    completed: false
+
+  };
+
+
+  studySessions.push(session);
+
+  saveStudySessions();
+
+  renderStudySessions();
+
+
+  document.getElementById(
+    "plannerSubject"
+  ).value = "";
+
+  document.getElementById(
+    "plannerTask"
+  ).value = "";
+
+  document.getElementById(
+    "plannerDate"
+  ).value = "";
+
+  document.getElementById(
+    "plannerTime"
+  ).value = "";
+
+
+  status.className =
+    "status success";
+
+  status.innerText =
+    "Study session added.";
+
+}
+
+
+function toggleStudySession(id) {
+
+  const session =
+    studySessions.find(
+      item => item.id === id
+    );
+
+
+  if (!session) {
+    return;
+  }
+
+
+  session.completed =
+    !session.completed;
+
+
+  saveStudySessions();
+
+  renderStudySessions();
+
+}
+
+
+function deleteStudySession(id) {
+
+  studySessions =
+    studySessions.filter(
+      item => item.id !== id
+    );
+
+
+  saveStudySessions();
+
+  renderStudySessions();
+
+}
+
+
+function renderStudySessions() {
+
+  const container =
+    document.getElementById(
+      "plannerSessions"
+    );
+
+
+  const progressBar =
+    document.getElementById(
+      "plannerProgressBar"
+    );
+
+
+  const progressText =
+    document.getElementById(
+      "plannerProgressText"
+    );
+
+
+  if (!container) {
+    return;
+  }
+
+
+  if (studySessions.length === 0) {
+
+    container.innerHTML =
+      '<p class="small">No study sessions yet.</p>';
+
+  } else {
+
+    studySessions.sort(
+      function (a, b) {
+
+        return (
+          (a.date + a.time)
+          .localeCompare(
+            b.date + b.time
+          )
+        );
+
+      }
+    );
+
+
+    container.innerHTML = "";
+
+
+    studySessions.forEach(
+      function (session) {
+
+        const item =
+          document.createElement("div");
+
+
+        item.style.cssText = `
+          padding:16px 0;
+          border-bottom:1px solid var(--border);
+        `;
+
+
+        const top =
+          document.createElement("div");
+
+
+        top.style.cssText = `
+          display:flex;
+          align-items:flex-start;
+          gap:12px;
+        `;
+
+
+        const checkbox =
+          document.createElement("input");
+
+
+        checkbox.type =
+          "checkbox";
+
+        checkbox.checked =
+          session.completed;
+
+
+        checkbox.style.cssText = `
+          width:18px;
+          height:18px;
+          margin-top:3px;
+          cursor:pointer;
+          flex-shrink:0;
+        `;
+
+
+        checkbox.addEventListener(
+          "change",
+          function () {
+
+            toggleStudySession(
+              session.id
+            );
+
+          }
+        );
+
+
+        const info =
+          document.createElement("div");
+
+        info.style.flex = "1";
+
+
+        const subject =
+          document.createElement("strong");
+
+        subject.innerText =
+          session.subject;
+
+
+        const task =
+          document.createElement("div");
+
+        task.innerText =
+          session.task;
+
+        task.style.cssText = `
+          margin-top:5px;
+          line-height:1.5;
+        `;
+
+
+        const dateTime =
+          document.createElement("div");
+
+        dateTime.innerText =
+          session.date +
+          " • " +
+          session.time;
+
+        dateTime.className =
+          "small";
+
+        dateTime.style.marginTop =
+          "7px";
+
+
+        if (session.completed) {
+
+          subject.style.textDecoration =
+            "line-through";
+
+          task.style.textDecoration =
+            "line-through";
+
+          task.style.opacity =
+            "0.55";
+
+        }
+
+
+        info.appendChild(
+          subject
+        );
+
+        info.appendChild(
+          task
+        );
+
+        info.appendChild(
+          dateTime
+        );
+
+
+        const deleteButton =
+          document.createElement("button");
+
+
+        deleteButton.innerText =
+          "Delete";
+
+        deleteButton.className =
+          "secondary-button";
+
+
+        deleteButton.style.marginTop =
+          "0";
+
+
+        deleteButton.addEventListener(
+          "click",
+          function () {
+
+            deleteStudySession(
+              session.id
+            );
+
+          }
+        );
+
+
+        top.appendChild(
+          checkbox
+        );
+
+        top.appendChild(
+          info
+        );
+
+        top.appendChild(
+          deleteButton
+        );
+
+
+        item.appendChild(
+          top
+        );
+
+
+        container.appendChild(
+          item
+        );
+
+      }
+    );
+
+  }
+
+
+  const total =
+    studySessions.length;
+
+
+  const completed =
+    studySessions.filter(
+      session => session.completed
+    ).length;
+
+
+  const percentage =
+    total === 0
+      ? 0
+      : Math.round(
+          (completed / total) * 100
+        );
+
+
+  if (progressBar) {
+
+    progressBar.style.width =
+      percentage + "%";
+
+  }
+
+
+  if (progressText) {
+
+    progressText.innerText =
+      percentage +
+      "% complete (" +
+      completed +
+      " of " +
+      total +
+      " sessions)";
+
+  }
+
+}
+
+
+/* LOAD SAVED STUDY PLAN */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function () {
+
+    renderStudySessions();
+
+  }
+);
 
 /* AUDIO */
 
