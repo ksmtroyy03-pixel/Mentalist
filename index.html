@@ -2239,15 +2239,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const menuButton = document.getElementById("menuButton");
   const buttons = document.querySelectorAll(".side-button");
 
-
   /* MENU */
 
   if (menuButton && sidebar) {
 
     menuButton.addEventListener("click", function () {
-
       sidebar.classList.toggle("open");
-
     });
 
   }
@@ -2265,45 +2262,14 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-
-      document.querySelectorAll("section").forEach(function (section) {
-
-        section.classList.remove("active");
-
-      });
-
-
-      const target = document.getElementById(page);
-
-      if (target) {
-
-        target.classList.add("active");
-
-      }
-
-
-      buttons.forEach(function (item) {
-
-        item.classList.remove("active");
-
-      });
-
-
-      button.classList.add("active");
-
-      sidebar.classList.remove("open");
-
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
+      showPage(page, button);
 
     });
 
-  }
+  });
 
 });
+</script>
 
 /* THEME SYSTEM */
 
