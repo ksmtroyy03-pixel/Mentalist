@@ -1365,32 +1365,6 @@ footer {
     </p>
 
   </div>
-   
-   <!-- AI STUDY PLAN -->
-
-<div class="card">
-
-  <h2>
-    AI Study Plan
-  </h2>
-
-  <p class="small" style="margin-top:8px;">
-    A study plan generated from your analyzed material.
-  </p>
-
-  <div
-    id="aiStudyPlan"
-    style="margin-top:18px;"
-  >
-
-    <p class="small">
-      Analyze your study material first.
-      Your personalized study plan will appear here.
-    </p>
-
-  </div>
-
-</div>
 
   <!-- SESSIONS -->
 
@@ -1884,6 +1858,11 @@ ${text}
       data.answer
     );
 
+ /* GENERATE AI STUDY PLAN */
+
+await generateStudyPlan(
+  text
+);
 
     status.className =
       "status success";
@@ -2581,30 +2560,6 @@ function addStudySession() {
   document.getElementById(
     "plannerTime"
   ).value = "";
-
-
-  parseAIResponse(
-  data.answer
-);
-
-
-/* GENERATE AI STUDY PLAN */
-
-await generateStudyPlan(
-  text
-);
-
-status.className =
-  "status success";
-
-status.innerText =
-  "Analysis complete.";
-
-loading.classList.remove(
-  "active"
-);
-
-showPage("notes");
 
   status.innerText =
     "Study session added.";
