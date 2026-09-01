@@ -1151,52 +1151,218 @@ footer {
 </section>
 
 
-    <!-- PLANNER -->
+<!-- PLANNER -->
 
-    <section id="planner">
+<section id="planner">
 
-      <div class="page-header">
+  <div class="page-header">
 
-        <h1>
-          Study plan
-        </h1>
+    <h1>
+      Study plan
+    </h1>
 
-        <p>
-          Organize your study sessions.
-        </p>
+    <p>
+      Organize your study sessions and track your progress.
+    </p>
+
+  </div>
+
+
+  <!-- PROGRESS -->
+
+  <div class="card">
+
+    <h2>
+      Your progress
+    </h2>
+
+    <div
+      style="
+        margin-top:15px;
+        height:10px;
+        background:var(--panel-soft);
+        border-radius:20px;
+        overflow:hidden;
+      ">
+
+      <div
+        id="plannerProgressBar"
+        style="
+          width:0%;
+          height:100%;
+          background:var(--button);
+          border-radius:20px;
+          transition:width 0.3s ease;
+        ">
+      </div>
+
+    </div>
+
+    <p
+      id="plannerProgressText"
+      class="small"
+      style="margin-top:10px;">
+
+      0% complete
+
+    </p>
+
+  </div>
+
+
+  <!-- ADD SESSION -->
+
+  <div class="card">
+
+    <h2>
+      Add study session
+    </h2>
+
+    <div style="margin-top:20px;">
+
+      <label class="small">
+        Subject
+      </label>
+
+      <input
+        id="plannerSubject"
+        type="text"
+        placeholder="e.g. Biology"
+        style="
+          width:100%;
+          margin-top:7px;
+          padding:12px 14px;
+          border:1px solid var(--border);
+          border-radius:10px;
+          background:var(--panel-soft);
+          color:var(--text);
+          font-size:14px;
+          outline:none;
+        ">
+
+    </div>
+
+
+    <div style="margin-top:16px;">
+
+      <label class="small">
+        Task
+      </label>
+
+      <input
+        id="plannerTask"
+        type="text"
+        placeholder="e.g. Review Chapter 3"
+        style="
+          width:100%;
+          margin-top:7px;
+          padding:12px 14px;
+          border:1px solid var(--border);
+          border-radius:10px;
+          background:var(--panel-soft);
+          color:var(--text);
+          font-size:14px;
+          outline:none;
+        ">
+
+    </div>
+
+
+    <div
+      style="
+        display:flex;
+        gap:12px;
+        margin-top:16px;
+      ">
+
+      <div style="flex:1;">
+
+        <label class="small">
+          Date
+        </label>
+
+        <input
+          id="plannerDate"
+          type="date"
+          style="
+            width:100%;
+            margin-top:7px;
+            padding:12px 10px;
+            border:1px solid var(--border);
+            border-radius:10px;
+            background:var(--panel-soft);
+            color:var(--text);
+            font-size:14px;
+            outline:none;
+          ">
 
       </div>
 
 
-      <div class="card">
+      <div style="flex:1;">
 
-        <div class="plan-item">
-          <span>Study session</span>
-          <span class="small">Add a subject</span>
-        </div>
+        <label class="small">
+          Time
+        </label>
 
-        <div class="plan-item">
-          <span>Review</span>
-          <span class="small">Add a session</span>
-        </div>
-
-        <div class="plan-item">
-          <span>Flashcards</span>
-          <span class="small">Add a session</span>
-        </div>
-
-        <p
-          class="small"
-          style="margin-top:18px;">
-
-          Planner customization will be added
-          in a future version.
-
-        </p>
+        <input
+          id="plannerTime"
+          type="time"
+          style="
+            width:100%;
+            margin-top:7px;
+            padding:12px 10px;
+            border:1px solid var(--border);
+            border-radius:10px;
+            background:var(--panel-soft);
+            color:var(--text);
+            font-size:14px;
+            outline:none;
+          ">
 
       </div>
 
-    </section>
+    </div>
+
+
+    <button
+      class="primary"
+      onclick="addStudySession()">
+
+      Add session
+
+    </button>
+
+
+    <p
+      id="plannerStatus"
+      class="status">
+    </p>
+
+  </div>
+
+
+  <!-- SESSIONS -->
+
+  <div class="card">
+
+    <h2>
+      Your sessions
+    </h2>
+
+    <div
+      id="plannerSessions"
+      style="margin-top:15px;">
+
+      <p class="small">
+        No study sessions yet.
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
 
 
     <!-- SETTINGS -->
