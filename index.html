@@ -1209,6 +1209,31 @@ footer {
 
   </div>
 
+<!-- AI STUDY PLAN -->
+
+<div class="card">
+
+  <h2>
+    AI Study Plan
+  </h2>
+
+  <p class="small" style="margin-top:8px;">
+    A study plan generated from your analyzed material.
+  </p>
+
+  <div
+    id="aiStudyPlan"
+    style="margin-top:18px;"
+  >
+
+    <p class="small">
+      Analyze your study material first.
+      Your personalized study plan will appear here.
+    </p>
+
+  </div>
+
+</div>
 
   <!-- ADD SESSION -->
 
@@ -2187,6 +2212,287 @@ function parseAIResponse(answer) {
 
 }
 
+/* AI STUDY PLAN */
+
+async function generateStudyPlan(material) {
+
+  const planOutput =
+    document.getElementById("aiStudyPlan");
+
+  if (!planOutput) {
+    return;
+  }
+
+  if (!material || !material.trim()) {
+    planOutput.innerHTML =
+      '<p class="small">No study material is available.</p>';
+    return;
+  }
+
+  planOutput.innerHTML =
+    '<p class="small">Mentalist is creating your study plan...</p>';
+
+  try {
+
+    const prompt = `
+You are Mentalist, an AI study assistant.
+
+Create a practical study plan based ONLY on the study material below.
+
+Do not assume the subject.
+
+Create exactly 5 study sessions.
+
+Each session must contain:
+
+SESSION 1
+Title: [short title]
+Task: [what the student should study]
+Review: [what the student should review]
+
+SESSION 2
+Title: [short title]
+Task: [what the student should study]
+Review: [what the student should review]
+
+SESSION 3
+Title: [short title]
+Task: [what the student should study]
+Review: [what the student should review]
+
+SESSION 4
+Title: [short title]
+Task: [what the student should study]
+Review: [what the student should review]
+
+SESSION 5
+Title: [short title]
+Task: [what the student should study]
+Review: [what the student should review]
+
+Keep each session concise and useful.
+
+Do not invent information that is not supported by the material.
+
+STUDY MATERIAL:
+
+${material}
+`;
+
+    const response =
+      await fetch("/api/chat", {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          message: prompt
+        })
+
+      });
+
+    const data =
+      await response.json();
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.error ||
+        "Could not generate the study plan."
+      );
+
+    }
+
+    if (!data.answer) {
+
+      throw new Error(
+        "The AI returned an empty study plan."
+      );
+
+    }
+
+    renderAIStudyPlan(
+      data.answer
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Study plan error:",
+      error
+    );
+
+    planOutput.innerHTML =
+      `<p class="status error">
+        ${error.message || "Could not generate the study plan."}
+      </p>`;
+
+  }
+
+}
+
+
+/* RENDER AI STUDY PLAN */
+
+function renderAIStudyPlan(answer) {
+
+  const planOutput =
+    document.getElementById("aiStudyPlan");
+
+  if (!planOutput) {
+    return;
+  }
+
+  planOutput.innerHTML = "";
+
+  const pattern =
+    /SESSION\s*(\d+)\s*[\r\n]+Title:\s*(.*?)\s*[\r\n]+Task:\s*(.*?)\s*[\r\n]+Review:\s*(.*?)(?=\s*SESSION\s*\d+|$)/gis;
+
+  let match;
+  let count = 0;
+
+  while (
+    (match = pattern.exec(answer)) !== null
+  ) {
+
+    count++;
+
+    const card =
+      document.createElement("div");
+
+    card.style.cssText = `
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:18px;
+      margin-bottom:12px;
+      background:var(--panel-soft);
+    `;
+
+    const title =
+      document.createElement("h3");
+
+    title.innerText =
+      "Session " +
+      match[1] +
+      " — " +
+      match[2].trim();
+
+    title.style.marginBottom =
+      "10px";
+
+    const task =
+      document.createElement("p");
+
+    task.innerHTML =
+      "<strong>Study:</strong> " +
+      match[3].trim();
+
+    task.style.lineHeight =
+      "1.6";
+
+    const review =
+      document.createElement("p");
+
+    review.innerHTML =
+      "<strong>Review:</strong> " +
+      match[4].trim();
+
+    review.style.cssText = `
+      margin-top:8px;
+      line-height:1.6;
+    `;
+
+   card.appendChild(title);
+card.appendChild(task);
+card.appendChild(review);
+
+
+/* ADD TO PLANNER BUTTON */
+
+const addButton =
+  document.createElement("button");
+
+addButton.className =
+  "primary";
+
+addButton.innerText =
+  "Add to planner";
+
+addButton.style.marginTop =
+  "14px";
+
+
+addButton.addEventListener(
+  "click",
+  function () {
+
+    const session = {
+
+      id: Date.now(),
+
+      subject:
+        match[2].trim(),
+
+      task:
+        match[3].trim(),
+
+      date:
+        new Date()
+          .toISOString()
+          .split("T")[0],
+
+      time:
+        "18:00",
+
+      completed:
+        false
+
+    };
+
+
+    studySessions.push(
+      session
+    );
+
+    saveStudySessions();
+
+    renderStudySessions();
+
+
+    addButton.innerText =
+      "Added to planner";
+
+    addButton.disabled =
+      true;
+
+  }
+);
+
+
+card.appendChild(
+  addButton
+);
+
+planOutput.appendChild(
+  card
+);
+
+  }
+
+  if (count === 0) {
+
+    planOutput.innerHTML =
+      `<p class="small">
+        The study plan could not be read from the AI response.
+      </p>`;
+
+  }
+
+}
+
 /* PLANNER SYSTEM */
 
 let studySessions =
@@ -2277,8 +2583,28 @@ function addStudySession() {
   ).value = "";
 
 
-  status.className =
-    "status success";
+  parseAIResponse(
+  data.answer
+);
+
+
+/* GENERATE AI STUDY PLAN */
+
+await generateStudyPlan(
+  text
+);
+
+status.className =
+  "status success";
+
+status.innerText =
+  "Analysis complete.";
+
+loading.classList.remove(
+  "active"
+);
+
+showPage("notes");
 
   status.innerText =
     "Study session added.";
@@ -2843,7 +3169,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const sidebar = document.getElementById("sidebar");
   const menuButton = document.getElementById("menuButton");
-  const buttons = document.querySelectorAll(".side-button");
 
   /* MENU */
 
@@ -2855,26 +3180,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   }
 
-
-  /* SIDEBAR NAVIGATION */
-
-  buttons.forEach(function (button) {
-
-    button.addEventListener("click", function () {
-
-      const page = button.getAttribute("data-page");
-
-      if (!page) {
-        return;
-      }
-
-      showPage(page, button);
-
-    });
-
-  });
-
 });
+
 </script>
 
 <script>
