@@ -2404,6 +2404,9 @@ addButton.style.marginTop =
   "14px";
 
 
+const sessionTitle = match[2].trim();
+const sessionTask = match[3].trim();
+
 addButton.addEventListener(
   "click",
   function () {
@@ -2412,11 +2415,9 @@ addButton.addEventListener(
 
       id: Date.now(),
 
-      subject:
-        match[2].trim(),
+      subject: sessionTitle,
 
-      task:
-        match[3].trim(),
+      task: sessionTask,
 
       date:
         new Date()
