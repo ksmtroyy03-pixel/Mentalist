@@ -82,7 +82,7 @@
     .upload-area h2{ font-size:21px; margin-bottom:8px; }
     .upload-area p{ color:var(--muted); font-size:14px; }
     .file-input{ margin-top:22px; max-width:100%; }
-    .primary{ background:var(--button); color:var(--button-text); border:none; padding:12px 20px; border-radius:11px; font-size:14px; font-weight:600; cursor:pointer; margin-top:18px; transition: transform .2s ease, opacity .2s ease; }
+    .primary{ background:var(--button); color:var(--button-text); border:none; padding:12px 20px; border-radius:11px; font-size:14px; font-weight:600; cursor:pointer; margin-top:18px; transition: transform .2s ease; }
     .primary:hover{ transform:translateY(-1px); }
     .status{ margin-top:16px; font-size:13px; color:var(--muted); min-height:20px; }
     .status.success{ color:#3f6b4f; } .status.error{ color:#9b3f3f; }
@@ -100,6 +100,16 @@
     .answer{ display:none; margin-top:15px; padding-top:15px; border-top:1px solid var(--border); color:var(--muted); line-height:1.7; }
     .answer.visible{ display:block; animation:answerIn .3s ease; }
     @keyframes answerIn{ from{opacity:0; transform:translateY(-5px);} to{opacity:1; transform:translateY(0);} }
+
+    /* Study plan styles */
+    .plan-item{ background:var(--panel-soft); border-left:4px solid var(--button); padding:16px; margin-bottom:12px; border-radius:8px; }
+    .plan-item h4{ margin-bottom:6px; color:var(--text); }
+    .plan-item p{ color:var(--muted); font-size:13px; line-height:1.6; }
+    .plan-item .duration{ color:var(--muted); font-size:12px; margin-top:8px; font-style:italic; }
+
+    .page-header{ margin-bottom:30px; }
+    .page-header h1{ font-size:clamp(24px, 5vw, 36px); margin-bottom:8px; }
+    .page-header p{ color:var(--muted); font-size:15px; }
 
     footer{ text-align:center; color:#888; padding:30px; font-size:12px; }
 
@@ -216,7 +226,7 @@
           <p>Create a schedule and track progress.</p>
         </div>
 
-        <div class="card">
+        <div id="plannerContent" class="card">
           <p class="small">No plan yet — analyze material to get suggested activities.</p>
         </div>
       </section>
@@ -228,7 +238,7 @@
   </main>
 
   <!-- Simple modal for settings -->
-  <div id="settingsModal" role="dialog" aria-modal="true" aria-hidden="true" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); align-items:center; justify-content:center; z-index:2000;">
+  <div id="settingsModal" role="dialog" aria-modal="true" aria-hidden="true" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); align-items:center; justify-content:center; z-index:1001;">
     <div style="background:var(--panel); margin:auto; padding:20px; border-radius:12px; width:min(480px,95%); box-shadow:var(--shadow);">
       <h2>Settings</h2>
       <p class="small">Theme and preferences will go here.</p>
@@ -250,6 +260,7 @@
       const uploadArea = document.getElementById('uploadArea');
       const uploadStatus = document.getElementById('uploadStatus');
       const loading = document.getElementById('loading');
+      const plannerContent = document.getElementById('plannerContent');
 
       // Toggle sidebar (for small screens)
       menuButton.addEventListener('click', () => {
@@ -305,6 +316,56 @@
         if (files && files.length) fileInput.files = files;
       });
 
+      // Generate study plan
+      function generateStudyPlan(fileName) {
+        const plan = [
+          {
+            day: 'Day 1',
+            activity: 'Read & Understand',
+            description: 'Review the uploaded material carefully and identify key concepts.',
+            duration: '45 minutes'
+          },
+          {
+            day: 'Day 2-3',
+            activity: 'Create Flashcards',
+            description: 'Generate flashcards from the main topics in ' + fileName + '.',
+            duration: '60 minutes'
+          },
+          {
+            day: 'Day 4',
+            activity: 'Review Notes',
+            description: 'Study the auto-generated summaries and highlight important sections.',
+            duration: '30 minutes'
+          },
+          {
+            day: 'Day 5-6',
+            activity: 'Practice & Test',
+            description: 'Use flashcards to quiz yourself and identify weak areas.',
+            duration: '45 minutes'
+          },
+          {
+            day: 'Day 7',
+            activity: 'Final Review',
+            description: 'Revisit difficult concepts and consolidate your learning.',
+            duration: '30 minutes'
+          }
+        ];
+
+        let planHTML = '';
+        plan.forEach(item => {
+          planHTML += `
+            <div class="plan-item">
+              <h4>${item.day}</h4>
+              <p><strong>${item.activity}</strong></p>
+              <p>${item.description}</p>
+              <div class="duration">⏱ ${item.duration}</div>
+            </div>
+          `;
+        });
+
+        plannerContent.innerHTML = planHTML;
+      }
+
       // Basic analyze action (client-side demo only)
       analyzeBtn.addEventListener('click', () => {
         const files = fileInput.files;
@@ -319,12 +380,15 @@
         // Fake processing delay; replace with real API call when available
         setTimeout(() => {
           loading.style.display = 'none';
-          uploadStatus.textContent = 'Analysis complete — notes generated (demo).';
+          uploadStatus.textContent = 'Analysis complete — notes and study plan generated (demo).';
           uploadStatus.className = 'status success';
 
           // Demo: place a simple note in the Notes section
           const notesText = document.getElementById('notesText');
           notesText.textContent = 'Sample generated notes for ' + files[0].name + '. (This is a demo.)';
+
+          // Generate study plan
+          generateStudyPlan(files[0].name);
 
           // navigate to notes
           showPage('notes');
