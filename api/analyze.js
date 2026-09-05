@@ -1,6 +1,25 @@
 import pdf from "pdf-parse";
 import mammoth from "mammoth";
 
+// Vercel's default body size limit (~1-4.5mb) is too small for base64-encoded
+// files, since base64 inflates size by ~33%. Raise it so larger uploads don't
+// get rejected before this handler even runs.
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "10mb"
+    }
+  }
+};
+
+// Loose but useful check: valid base64 only contains these characters
+// (plus optional padding). This won't catch every malformed input, but it
+// catches the common case of garbage/non-base64 strings early, with a clear
+// error instead of a confusing downstream failure.
+function looksLikeBase64(str) {
+  return typeof str === "string" && /^[A-Za-z0-9+/]+={0,2}$/.test(str.trim());
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({
@@ -22,6 +41,12 @@ export default async function handler(req, res) {
     if (!fileData || !fileType) {
       return res.status(400).json({
         error: "File data is missing."
+      });
+    }
+
+    if (!looksLikeBase64(fileData)) {
+      return res.status(400).json({
+        error: "File data is not valid base64."
       });
     }
 
