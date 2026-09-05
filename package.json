@@ -1,4 +1,7 @@
 {
+  "name": "mentalist",
+  "version": "1.0.0",
+  "private": true,
   "type": "module",
   "dependencies": {
     "pdf-parse": "^1.1.1",
