@@ -125,23 +125,63 @@
     .status{ margin-top:16px; font-size:13px; color:var(--muted); min-height:20px; }
     .status.success{ color:#3f6b4f; } .status.error{ color:#9b3f3f; }
 
-    /* Notes area */
-    .notes-content{ background:var(--panel); border:1px solid var(--border); border-radius:18px; padding:30px; box-shadow:var(--shadow); max-height:560px; overflow-y:auto; scroll-behavior:smooth; }
+    /* Scrollable inner content boxes (Notes / Key Points) */
+    .scroll-box{
+      background:var(--panel); border:1px solid var(--border); border-radius:18px;
+      box-shadow:var(--shadow); max-height:400px; overflow-y:auto; scroll-behavior:smooth;
+      padding:24px; margin-bottom:14px;
+    }
+    .scroll-box h2{ margin-bottom:14px; position:sticky; top:-24px; background:var(--panel); padding-top:4px; }
     .notes-text{ white-space:pre-wrap; font-size:16px; line-height:1.8; color:var(--text); }
+    .keypoints-list{ list-style:none; }
+    .keypoints-list li{
+      position:relative; padding:10px 0 10px 26px; border-bottom:1px solid var(--border);
+      font-size:15px; line-height:1.6;
+    }
+    .keypoints-list li:last-child{ border-bottom:none; }
+    .keypoints-list li::before{ content:"●"; position:absolute; left:0; top:10px; color:var(--button); font-size:10px; }
 
-    /* Small helpers */
-    .audio-controls{ display:flex; gap:8px; margin-top:22px; position:sticky; bottom:0; padding:12px 0 4px; background:rgba(255,255,255,0.88); backdrop-filter: blur(12px); z-index:5; }
+    /* TTS controls */
+    .tts-controls{ display:flex; gap:8px; align-items:center; margin-top:4px; }
+    .tts-btn{
+      background:var(--panel-soft); color:var(--text); border:1px solid var(--border); padding:8px 14px;
+      border-radius:9px; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:6px;
+      transition: background .2s ease, transform .2s ease;
+    }
+    .tts-btn:hover{ background:var(--sidebar-hover); transform:translateY(-1px); }
+    .tts-btn:disabled{ opacity:.5; cursor:not-allowed; transform:none; }
+    .tts-status{ font-size:12px; color:var(--muted); }
+
     .secondary-button{ background:var(--panel-soft); color:var(--text); border:1px solid var(--border); padding:10px 15px; border-radius:10px; font-size:13px; cursor:pointer; }
     .secondary-button:hover{ background:var(--sidebar-hover); transform:translateY(-1px); }
 
-    .flashcard{ background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:22px; margin-bottom:15px; box-shadow:var(--shadow); cursor:pointer; }
+    /* Flashcards */
+    .flashcard{ background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:22px; margin-bottom:15px; box-shadow:var(--shadow); }
+    .flashcard h3{ margin-bottom:4px; }
     .answer{ display:none; margin-top:15px; padding-top:15px; border-top:1px solid var(--border); color:var(--muted); line-height:1.7; }
     .answer.visible{ display:block; animation:answerIn .3s ease; }
     @keyframes answerIn{ from{opacity:0; transform:translateY(-5px);} to{opacity:1; transform:translateY(0);} }
+    .reveal-btn{
+      margin-top:14px; background:none; border:1px solid var(--border); color:var(--button);
+      padding:7px 14px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer;
+    }
+    .reveal-btn:hover{ background:var(--panel-soft); }
 
-    /* Study plan styles */
+    /* Study plan controls */
+    .plan-controls{
+      display:flex; flex-wrap:wrap; gap:14px; align-items:flex-end; background:var(--panel);
+      border:1px solid var(--border); border-radius:16px; padding:18px; box-shadow:var(--shadow); margin-bottom:18px;
+    }
+    .plan-field{ display:flex; flex-direction:column; gap:6px; font-size:12px; color:var(--muted); }
+    .plan-field input, .plan-field select{
+      font-size:14px; padding:9px 10px; border-radius:8px; border:1px solid var(--border);
+      background:var(--panel-soft); color:var(--text); min-width:130px;
+    }
     .plan-item{ background:var(--panel-soft); border-left:4px solid var(--button); padding:16px; margin-bottom:12px; border-radius:8px; }
     .plan-item h4{ margin-bottom:6px; color:var(--text); }
+    .plan-item .plan-points{ list-style:none; margin:8px 0; }
+    .plan-item .plan-points li{ font-size:13px; color:var(--muted); padding-left:14px; position:relative; margin-bottom:4px; }
+    .plan-item .plan-points li::before{ content:"–"; position:absolute; left:0; }
     .plan-item p{ color:var(--muted); font-size:13px; line-height:1.6; }
     .plan-item .duration{ color:var(--muted); font-size:12px; margin-top:8px; font-style:italic; }
 
@@ -172,9 +212,10 @@
       .content{ width:calc(100% - 24px); padding-top:35px; }
       .welcome{ min-height:60vh; }
       .welcome h1{ font-size:34px; }
-      .card, .notes-content{ padding:19px; }
-      .notes-content{ max-height:500px; }
+      .card, .scroll-box{ padding:19px; }
+      .scroll-box{ max-height:340px; }
       .upload-area{ padding:40px 15px; }
+      .plan-controls{ flex-direction:column; align-items:stretch; }
     }
   </style>
 </head>
@@ -249,12 +290,31 @@
       <section id="notes" aria-hidden="true">
         <div class="page-header">
           <h1>Notes</h1>
-          <p>Auto-generated notes and summaries will appear here.</p>
+          <p>Read at your own pace — scroll inside each box, the page stays put.</p>
         </div>
 
-        <div class="notes-content card">
+        <div class="scroll-box">
           <h2>Notes</h2>
           <div id="notesText" class="notes-text">No notes yet. Analyze material to generate notes.</div>
+        </div>
+        <div id="notesAudioRow" class="tts-controls" style="margin-bottom:26px; display:none;">
+          <button class="tts-btn" data-tts-play="notesText">▶ Play</button>
+          <button class="tts-btn" data-tts-pause="notesText">⏸ Pause</button>
+          <button class="tts-btn" data-tts-stop="notesText">⏹ Stop</button>
+          <span class="tts-status" data-tts-status="notesText"></span>
+        </div>
+
+        <div class="scroll-box">
+          <h2>Key Points</h2>
+          <ul id="keyPointsList" class="keypoints-list">
+            <li>No key points yet. Analyze material to generate them.</li>
+          </ul>
+        </div>
+        <div id="keyPointsAudioRow" class="tts-controls" style="display:none;">
+          <button class="tts-btn" data-tts-play="keyPointsList">▶ Play</button>
+          <button class="tts-btn" data-tts-pause="keyPointsList">⏸ Pause</button>
+          <button class="tts-btn" data-tts-stop="keyPointsList">⏹ Stop</button>
+          <span class="tts-status" data-tts-status="keyPointsList"></span>
         </div>
       </section>
 
@@ -262,11 +322,15 @@
       <section id="flashcards" aria-hidden="true">
         <div class="page-header">
           <h1>Flashcards</h1>
-          <p>Study quickly with generated flashcards.</p>
+          <p>Study quickly with generated flashcards — reveal answers when you're ready.</p>
         </div>
 
-        <div id="flashcardsList" class="card">
-          <div class="flashcard"><h3>Example question</h3><div class="answer">Example answer</div></div>
+        <div id="flashcardsList">
+          <div class="flashcard">
+            <h3>Example question</h3>
+            <button class="reveal-btn" type="button">Show answer</button>
+            <div class="answer">Example answer</div>
+          </div>
         </div>
       </section>
 
@@ -274,11 +338,34 @@
       <section id="planner" aria-hidden="true">
         <div class="page-header">
           <h1>Study plan</h1>
-          <p>Create a schedule and track progress.</p>
+          <p>A plan built from your key points, spread over the time you choose.</p>
         </div>
 
-        <div id="plannerContent" class="card">
-          <p class="small">No plan yet — analyze material to get suggested activities.</p>
+        <div class="plan-controls">
+          <div class="plan-field">
+            <label for="planDays">Study over</label>
+            <input id="planDays" type="number" min="1" max="30" value="7" />
+          </div>
+          <div class="plan-field">
+            <label for="planUnit">Time unit</label>
+            <select id="planUnit">
+              <option value="days" selected>Days</option>
+              <option value="weeks">Weeks</option>
+            </select>
+          </div>
+          <div class="plan-field">
+            <label for="focusMode">Focus mode</label>
+            <select id="focusMode">
+              <option value="quick">Quick Review (15 min)</option>
+              <option value="standard" selected>Standard (30 min)</option>
+              <option value="deep">Deep Focus (50 min)</option>
+            </select>
+          </div>
+          <button id="regeneratePlan" class="secondary-button" type="button">Update plan</button>
+        </div>
+
+        <div id="plannerContent">
+          <p class="small">No plan yet — analyze material to get a study plan built from its key points.</p>
         </div>
       </section>
 
@@ -336,14 +423,24 @@
       const uploadStatus = document.getElementById('uploadStatus');
       const loading = document.getElementById('loading');
       const plannerContent = document.getElementById('plannerContent');
-      const notesText = document.getElementById('notesText');
+      const notesTextEl = document.getElementById('notesText');
+      const keyPointsListEl = document.getElementById('keyPointsList');
       const flashcardsList = document.getElementById('flashcardsList');
+      const notesAudioRow = document.getElementById('notesAudioRow');
+      const keyPointsAudioRow = document.getElementById('keyPointsAudioRow');
+      const planDaysInput = document.getElementById('planDays');
+      const planUnitSelect = document.getElementById('planUnit');
+      const focusModeSelect = document.getElementById('focusMode');
+      const regeneratePlanBtn = document.getElementById('regeneratePlan');
       const themeOptions = Array.from(document.querySelectorAll('.theme-option'));
 
+      // State kept in memory so the study plan can be rebuilt instantly when
+      // the student changes the time period or focus mode, without another
+      // AI call.
+      let currentKeyPoints = [];
+      let currentFileName = '';
+
       // ---------- Theme ----------
-      // Persist the choice in localStorage so it survives reloads. This is a
-      // plain static page (not a Claude.ai artifact), so localStorage is fine
-      // here — it just wasn't wired up to anything before.
       function applyTheme(theme){
         document.body.setAttribute('data-theme', theme);
         themeOptions.forEach(btn => {
@@ -364,7 +461,7 @@
         });
       });
 
-      // ---------- Sidebar ----------
+      // ---------- Sidebar / navigation ----------
       menuButton.addEventListener('click', () => {
         const open = sidebar.classList.toggle('open');
         menuButton.setAttribute('aria-expanded', String(open));
@@ -379,6 +476,7 @@
         sideButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.page === pageId));
         sidebar.classList.remove('open');
         menuButton.setAttribute('aria-expanded','false');
+        stopSpeech(); // don't keep reading a page the student just left
       }
 
       sideButtons.forEach(btn => {
@@ -423,12 +521,218 @@
         }
       });
 
-      // ---------- Helpers ----------
+      // ---------- Text-to-speech (Web Speech API, runs entirely in-browser) ----------
+      let currentUtterance = null;
+      let currentSpeakingKey = null;
+
+      function setTtsStatus(key, text){
+        document.querySelectorAll(`[data-tts-status="${key}"]`).forEach(el => { el.textContent = text; });
+      }
+
+      function stopSpeech(){
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        currentUtterance = null;
+        if (currentSpeakingKey) setTtsStatus(currentSpeakingKey, '');
+        currentSpeakingKey = null;
+      }
+
+      function speak(key, text){
+        if (!('speechSynthesis' in window)) {
+          setTtsStatus(key, 'Audio not supported in this browser.');
+          return;
+        }
+        if (!text || !text.trim()) {
+          setTtsStatus(key, 'Nothing to read yet.');
+          return;
+        }
+        stopSpeech();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1;
+        utterance.onend = () => { setTtsStatus(key, ''); currentSpeakingKey = null; };
+        utterance.onerror = () => { setTtsStatus(key, 'Playback error.'); currentSpeakingKey = null; };
+        currentUtterance = utterance;
+        currentSpeakingKey = key;
+        setTtsStatus(key, 'Playing…');
+        window.speechSynthesis.speak(utterance);
+      }
+
+      function pauseOrResumeSpeech(key){
+        if (!('speechSynthesis' in window)) return;
+        if (window.speechSynthesis.speaking && !window.speechSynthesis.paused && currentSpeakingKey === key) {
+          window.speechSynthesis.pause();
+          setTtsStatus(key, 'Paused');
+        } else if (window.speechSynthesis.paused && currentSpeakingKey === key) {
+          window.speechSynthesis.resume();
+          setTtsStatus(key, 'Playing…');
+        }
+      }
+
+      // Wire up any play/pause/stop buttons found anywhere on the page —
+      // used for the static Notes / Key Points rows and any per-session
+      // buttons the study plan renders dynamically.
+      document.addEventListener('click', (e) => {
+        const playBtn = e.target.closest('[data-tts-play]');
+        if (playBtn) {
+          const key = playBtn.getAttribute('data-tts-play');
+          const source = document.getElementById(key);
+          const text = source ? source.textContent : '';
+          speak(key, text);
+          return;
+        }
+        const pauseBtn = e.target.closest('[data-tts-pause]');
+        if (pauseBtn) {
+          pauseOrResumeSpeech(pauseBtn.getAttribute('data-tts-pause'));
+          return;
+        }
+        const stopBtn = e.target.closest('[data-tts-stop]');
+        if (stopBtn) {
+          stopSpeech();
+        }
+      });
+
+      // ---------- Text cleanup ----------
+      // Gemini is asked for plain text, but this strips common markdown
+      // artifacts (**, #, bullet dashes, etc.) as a safety net so raw
+      // symbols never show up in the Notes / Key Points sections.
+      function stripMarkdown(str){
+        if (!str) return '';
+        return str
+          .replace(/\*\*(.*?)\*\*/g, '$1')
+          .replace(/\*(.*?)\*/g, '$1')
+          .replace(/^#{1,6}\s*/gm, '')
+          .replace(/^[-•]\s*/gm, '')
+          .replace(/`/g, '')
+          .trim();
+      }
+
+      function escapeHtml(str){
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      }
+
+      // ---------- Rendering ----------
+      function renderNotes(text){
+        const clean = stripMarkdown(text) || 'No notes were generated.';
+        notesTextEl.textContent = clean;
+        notesAudioRow.style.display = 'flex';
+      }
+
+      function renderKeyPoints(points){
+        const clean = (Array.isArray(points) ? points : [])
+          .map(p => stripMarkdown(String(p)))
+          .filter(Boolean);
+        if (clean.length === 0) {
+          keyPointsListEl.innerHTML = '<li>No key points were generated.</li>';
+          keyPointsAudioRow.style.display = 'none';
+          return;
+        }
+        keyPointsListEl.innerHTML = clean.map(p => `<li>${escapeHtml(p)}</li>`).join('');
+        keyPointsAudioRow.style.display = 'flex';
+      }
+
+      function renderFlashcards(cards){
+        if (!Array.isArray(cards) || cards.length === 0) {
+          flashcardsList.innerHTML = '<p class="small">No flashcards were generated.</p>';
+          return;
+        }
+        flashcardsList.innerHTML = cards.map((c, i) => `
+          <div class="flashcard" data-index="${i}">
+            <h3>${escapeHtml(stripMarkdown(c.question || ''))}</h3>
+            <button class="reveal-btn" type="button">Show answer</button>
+            <div class="answer">${escapeHtml(stripMarkdown(c.answer || ''))}</div>
+          </div>
+        `).join('');
+
+        flashcardsList.querySelectorAll('.flashcard').forEach(card => {
+          const btn = card.querySelector('.reveal-btn');
+          const answer = card.querySelector('.answer');
+          btn.addEventListener('click', () => {
+            const showing = answer.classList.toggle('visible');
+            btn.textContent = showing ? 'Hide answer' : 'Show answer';
+          });
+        });
+      }
+
+      const FOCUS_MODES = {
+        quick:    { label: 'Quick Review', minutes: 15 },
+        standard: { label: 'Standard', minutes: 30 },
+        deep:     { label: 'Deep Focus', minutes: 50 }
+      };
+
+      // Splits the key points into N roughly-even chunks (one per study
+      // session) and turns each chunk into a short, readable study note —
+      // built client-side so changing the time period or focus mode is
+      // instant and doesn't need another AI call.
+      function buildStudyPlan(keyPoints, totalSessions, focusModeKey){
+        const mode = FOCUS_MODES[focusModeKey] || FOCUS_MODES.standard;
+        if (!Array.isArray(keyPoints) || keyPoints.length === 0) return [];
+
+        const sessions = Math.max(1, Math.min(totalSessions, keyPoints.length * 3));
+        const chunks = Array.from({ length: sessions }, () => []);
+        keyPoints.forEach((point, i) => {
+          chunks[i % sessions].push(point);
+        });
+
+        return chunks
+          .map((points, i) => {
+            if (points.length === 0) return null;
+            const note = points.length === 1
+              ? `Focus on this idea: ${points[0]}`
+              : `Work through these ideas one at a time: ${points.join('. ')}.`;
+            return {
+              day: `Session ${i + 1}`,
+              points,
+              note,
+              duration: `${mode.minutes} minutes • ${mode.label}`
+            };
+          })
+          .filter(Boolean);
+      }
+
+      function renderStudyPlan(plan){
+        if (!Array.isArray(plan) || plan.length === 0) {
+          plannerContent.innerHTML = '<p class="small">No plan yet — analyze material to get a study plan built from its key points.</p>';
+          return;
+        }
+        plannerContent.innerHTML = plan.map((item, i) => {
+          const sessionKey = `planSession${i}`;
+          return `
+            <div class="plan-item">
+              <h4>${escapeHtml(item.day)}</h4>
+              <ul class="plan-points">
+                ${item.points.map(p => `<li>${escapeHtml(p)}</li>`).join('')}
+              </ul>
+              <p id="${sessionKey}">${escapeHtml(item.note)}</p>
+              <div class="duration">⏱ ${escapeHtml(item.duration)}</div>
+              <div class="tts-controls" style="margin-top:12px;">
+                <button class="tts-btn" data-tts-play="${sessionKey}">▶ Play</button>
+                <button class="tts-btn" data-tts-pause="${sessionKey}">⏸ Pause</button>
+                <button class="tts-btn" data-tts-stop="${sessionKey}">⏹ Stop</button>
+                <span class="tts-status" data-tts-status="${sessionKey}"></span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function regeneratePlanFromState(){
+        const rawDays = parseInt(planDaysInput.value, 10) || 1;
+        const unit = planUnitSelect.value;
+        const totalSessions = unit === 'weeks' ? rawDays * 7 : rawDays;
+        const plan = buildStudyPlan(currentKeyPoints, totalSessions, focusModeSelect.value);
+        renderStudyPlan(plan);
+      }
+
+      regeneratePlanBtn.addEventListener('click', regeneratePlanFromState);
+      planUnitSelect.addEventListener('change', regeneratePlanFromState);
+      focusModeSelect.addEventListener('change', regeneratePlanFromState);
+
+      // ---------- Analyze flow (hits /api/analyze + /api/chat) ----------
       function fileToBase64(file){
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.onload = () => {
-            // result looks like "data:<mime>;base64,AAAA..." — strip the prefix
             const result = reader.result;
             const base64 = typeof result === 'string' ? result.split(',')[1] : '';
             resolve(base64);
@@ -438,60 +742,18 @@
         });
       }
 
-      function renderFlashcards(cards){
-        if (!Array.isArray(cards) || cards.length === 0) {
-          flashcardsList.innerHTML = '<p class="small">No flashcards yet.</p>';
-          return;
+      // Pulls the first {...} JSON object out of a string, in case the AI
+      // wraps its JSON in commentary or code fences despite being asked not to.
+      function extractJson(str){
+        const cleaned = str.replace(/```json|```/g, '').trim();
+        try { return JSON.parse(cleaned); } catch (e) { /* fall through */ }
+        const match = cleaned.match(/\{[\s\S]*\}/);
+        if (match) {
+          try { return JSON.parse(match[0]); } catch (e) { /* give up below */ }
         }
-        flashcardsList.innerHTML = cards.map((c, i) => `
-          <div class="flashcard" data-index="${i}">
-            <h3>${escapeHtml(c.question || '')}</h3>
-            <div class="answer">${escapeHtml(c.answer || '')}</div>
-          </div>
-        `).join('');
-
-        flashcardsList.querySelectorAll('.flashcard').forEach(card => {
-          card.addEventListener('click', () => {
-            const answer = card.querySelector('.answer');
-            answer.classList.toggle('visible');
-          });
-        });
+        return null;
       }
 
-      function renderStudyPlan(plan){
-        if (!Array.isArray(plan) || plan.length === 0) {
-          plannerContent.innerHTML = '<p class="small">No plan yet.</p>';
-          return;
-        }
-        plannerContent.innerHTML = plan.map(item => `
-          <div class="plan-item">
-            <h4>${escapeHtml(item.day || '')}</h4>
-            <p><strong>${escapeHtml(item.activity || '')}</strong></p>
-            <p>${escapeHtml(item.description || '')}</p>
-            <div class="duration">⏱ ${escapeHtml(item.duration || '')}</div>
-          </div>
-        `).join('');
-      }
-
-      function escapeHtml(str){
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-      }
-
-      // Fallback study plan generator, used only if the AI call fails but we
-      // still successfully extracted text — so the user gets *something*.
-      function fallbackStudyPlan(fileName){
-        return [
-          { day: 'Day 1', activity: 'Read & Understand', description: 'Review the uploaded material carefully and identify key concepts.', duration: '45 minutes' },
-          { day: 'Day 2-3', activity: 'Create Flashcards', description: 'Generate flashcards from the main topics in ' + fileName + '.', duration: '60 minutes' },
-          { day: 'Day 4', activity: 'Review Notes', description: 'Study the auto-generated summaries and highlight important sections.', duration: '30 minutes' },
-          { day: 'Day 5-6', activity: 'Practice & Test', description: 'Use flashcards to quiz yourself and identify weak areas.', duration: '45 minutes' },
-          { day: 'Day 7', activity: 'Final Review', description: 'Revisit difficult concepts and consolidate your learning.', duration: '30 minutes' }
-        ];
-      }
-
-      // ---------- Analyze flow (real, hits /api/analyze + /api/chat) ----------
       analyzeBtn.addEventListener('click', async () => {
         const files = fileInput.files;
         if (!files || files.length === 0) {
@@ -501,13 +763,13 @@
         }
 
         const file = files[0];
+        currentFileName = file.name;
         uploadStatus.textContent = '';
         uploadStatus.className = 'status';
         loading.style.display = 'block';
         analyzeBtn.disabled = true;
 
         try {
-          // 1. Extract text from the uploaded file via /api/analyze
           const base64 = await fileToBase64(file);
 
           const analyzeRes = await fetch('/api/analyze', {
@@ -523,15 +785,13 @@
 
           const extractedText = analyzeData.text;
 
-          // 2. Ask Gemini (via /api/chat) to turn the text into notes,
-          //    flashcards, and a study plan, as JSON.
           const prompt = [
             'You are a study assistant. Based ONLY on the study material below,',
             'produce a JSON object with exactly these keys:',
-            '"notes" (a clear, well-organized plain-text summary of the material),',
-            '"flashcards" (an array of 5-8 objects like {"question": "...", "answer": "..."}),',
-            '"studyPlan" (an array of 5-7 objects like {"day": "Day 1", "activity": "...", "description": "...", "duration": "..."}).',
-            'Respond with ONLY the raw JSON object, no markdown code fences, no extra commentary.',
+            '"notes": a clear, well-organized plain-text summary (plain sentences only, NO markdown, NO asterisks, NO hashes, NO bullet dashes),',
+            '"keyPoints": an array of 6-10 short strings, each ONE concise key fact or concept from the material (plain text, no markdown),',
+            '"flashcards": an array of 5-8 objects like {"question": "...", "answer": "..."} (plain text, no markdown).',
+            'Respond with ONLY the raw JSON object. No markdown code fences, no commentary, no extra text before or after.',
             '',
             'STUDY MATERIAL:',
             extractedText.slice(0, 12000)
@@ -548,20 +808,16 @@
             throw new Error(chatData.error || 'The AI request failed.');
           }
 
-          let parsed;
-          try {
-            const cleaned = chatData.answer.replace(/```json|```/g, '').trim();
-            parsed = JSON.parse(cleaned);
-          } catch (parseErr) {
-            // AI didn't return clean JSON — fall back to showing raw notes only
-            parsed = { notes: chatData.answer, flashcards: [], studyPlan: fallbackStudyPlan(file.name) };
-          }
+          const parsed = extractJson(chatData.answer) || { notes: chatData.answer, keyPoints: [], flashcards: [] };
 
-          notesText.textContent = parsed.notes || 'No notes were generated.';
+          currentKeyPoints = Array.isArray(parsed.keyPoints) ? parsed.keyPoints.map(stripMarkdown) : [];
+
+          renderNotes(parsed.notes);
+          renderKeyPoints(currentKeyPoints);
           renderFlashcards(parsed.flashcards);
-          renderStudyPlan(parsed.studyPlan && parsed.studyPlan.length ? parsed.studyPlan : fallbackStudyPlan(file.name));
+          regeneratePlanFromState();
 
-          uploadStatus.textContent = 'Analysis complete — notes, flashcards, and a study plan were generated.';
+          uploadStatus.textContent = 'Analysis complete — notes, key points, flashcards, and a study plan were generated.';
           uploadStatus.className = 'status success';
 
           showPage('notes');
