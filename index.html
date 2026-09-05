@@ -18,11 +18,32 @@
       --text:#f1f1f1; --muted:#a7a7a7; --sidebar:#202225; --sidebar-hover:#303338;
       --button:#f1f1f1; --button-text:#18191b; --shadow:0 2px 12px rgba(0,0,0,0.25);
     }
+    body[data-theme="sepia"]{
+      --bg:#f4ecd8; --panel:#faf3e3; --panel-soft:#eee1c6; --border:#ddcda3;
+      --text:#4b3b26; --muted:#8a7a5a; --sidebar:#eee1c6; --sidebar-hover:#e3d3ab;
+      --button:#4b3b26; --button-text:#faf3e3; --shadow:0 2px 12px rgba(75,59,38,0.12);
+    }
+    body[data-theme="ocean"]{
+      --bg:#eef4f9; --panel:#ffffff; --panel-soft:#e1edf7; --border:#c7dcec;
+      --text:#12324a; --muted:#5c7c92; --sidebar:#e1edf7; --sidebar-hover:#cfe2f2;
+      --button:#155e8a; --button-text:#ffffff; --shadow:0 2px 12px rgba(21,94,138,0.12);
+    }
+    body[data-theme="forest"]{
+      --bg:#eef3ea; --panel:#ffffff; --panel-soft:#e2ebdc; --border:#c9dabd;
+      --text:#243821; --muted:#63795c; --sidebar:#e2ebdc; --sidebar-hover:#d1e0c5;
+      --button:#3a6b32; --button-text:#ffffff; --shadow:0 2px 12px rgba(58,107,50,0.12);
+    }
+    body[data-theme="contrast"]{
+      --bg:#000000; --panel:#000000; --panel-soft:#1a1a1a; --border:#ffff00;
+      --text:#ffffff; --muted:#ffff00; --sidebar:#000000; --sidebar-hover:#1a1a1a;
+      --button:#ffff00; --button-text:#000000; --shadow:0 0 0 1px #ffff00;
+    }
 
     html { scroll-behavior: smooth; }
     body{
       font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
       background: var(--bg); color: var(--text); min-height:100vh; overflow-x:hidden;
+      transition: background .25s ease, color .25s ease;
     }
 
     /* Header */
@@ -31,6 +52,12 @@
       padding:0 24px; background:rgba(255,255,255,0.55); backdrop-filter: blur(18px);
       border-bottom:1px solid var(--border); z-index:1000;
     }
+    body[data-theme="dark"] header{ background:rgba(24,25,27,0.55); }
+    body[data-theme="sepia"] header{ background:rgba(244,236,216,0.65); }
+    body[data-theme="ocean"] header{ background:rgba(238,244,249,0.65); }
+    body[data-theme="forest"] header{ background:rgba(238,243,234,0.65); }
+    body[data-theme="contrast"] header{ background:rgba(0,0,0,0.9); border-bottom-color:var(--border); }
+
     .menu-button{ width:42px; height:42px; border:none; border-radius:10px; background:transparent;
       display:flex; align-items:center; justify-content:center; cursor:pointer;
     }
@@ -58,6 +85,11 @@
     }
     .side-button:hover{ background:var(--sidebar-hover); padding-left:16px; }
     .side-button.active{ background:#d9d9d9; font-weight:600; }
+    body[data-theme="dark"] .side-button.active{ background:#3a3d42; }
+    body[data-theme="sepia"] .side-button.active{ background:#e3d3ab; }
+    body[data-theme="ocean"] .side-button.active{ background:#cfe2f2; }
+    body[data-theme="forest"] .side-button.active{ background:#d1e0c5; }
+    body[data-theme="contrast"] .side-button.active{ background:#ffff00; color:#000000; }
     .side-divider{ height:1px; background:var(--border); margin:16px 8px; }
 
     /* Main content */
@@ -69,7 +101,7 @@
     @keyframes sectionIn{ from{ opacity:0; transform:translateY(18px);} to{opacity:1; transform:translateY(0);} }
 
     /* Cards / welcome */
-    .card{ background:var(--panel); border:1px solid var(--border); border-radius:18px; padding:24px; margin-bottom:18px; box-shadow:var(--shadow); transition: transform .3s ease, box-shadow .3s ease; }
+    .card{ background:var(--panel); border:1px solid var(--border); border-radius:18px; padding:24px; margin-bottom:18px; box-shadow:var(--shadow); transition: transform .3s ease, box-shadow .3s ease, background .25s ease; }
     .card:hover{ transform:translateY(-2px); }
     .welcome{ min-height:55vh; display:flex; flex-direction:column; justify-content:center; padding:30px 10px; }
     .welcome h1{ font-size:clamp(32px,7vw,50px); font-weight:650; letter-spacing:-1.5px; margin-bottom:15px; }
@@ -79,11 +111,17 @@
     /* Upload */
     .upload-area{ border:2px dashed #c9c9c9; border-radius:18px; padding:55px 20px; text-align:center; transition:border-color .25s ease, background .25s ease; }
     .upload-area.dragging{ border-color:#777; background:#f0f0f0; }
+    body[data-theme="dark"] .upload-area.dragging{ background:#2b2e32; }
+    body[data-theme="sepia"] .upload-area.dragging{ background:#eee1c6; }
+    body[data-theme="ocean"] .upload-area.dragging{ background:#e1edf7; }
+    body[data-theme="forest"] .upload-area.dragging{ background:#e2ebdc; }
+    body[data-theme="contrast"] .upload-area.dragging{ background:#1a1a1a; border-color:#ffff00; }
     .upload-area h2{ font-size:21px; margin-bottom:8px; }
     .upload-area p{ color:var(--muted); font-size:14px; }
-    .file-input{ margin-top:22px; max-width:100%; }
-    .primary{ background:var(--button); color:var(--button-text); border:none; padding:12px 20px; border-radius:11px; font-size:14px; font-weight:600; cursor:pointer; margin-top:18px; transition: transform .2s ease; }
+    .file-input{ margin-top:22px; max-width:100%; color:var(--text); }
+    .primary{ background:var(--button); color:var(--button-text); border:none; padding:12px 20px; border-radius:11px; font-size:14px; font-weight:600; cursor:pointer; margin-top:18px; transition: transform .2s ease, opacity .2s ease; }
     .primary:hover{ transform:translateY(-1px); }
+    .primary:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
     .status{ margin-top:16px; font-size:13px; color:var(--muted); min-height:20px; }
     .status.success{ color:#3f6b4f; } .status.error{ color:#9b3f3f; }
 
@@ -96,7 +134,7 @@
     .secondary-button{ background:var(--panel-soft); color:var(--text); border:1px solid var(--border); padding:10px 15px; border-radius:10px; font-size:13px; cursor:pointer; }
     .secondary-button:hover{ background:var(--sidebar-hover); transform:translateY(-1px); }
 
-    .flashcard{ background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:22px; margin-bottom:15px; box-shadow:var(--shadow); }
+    .flashcard{ background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:22px; margin-bottom:15px; box-shadow:var(--shadow); cursor:pointer; }
     .answer{ display:none; margin-top:15px; padding-top:15px; border-top:1px solid var(--border); color:var(--muted); line-height:1.7; }
     .answer.visible{ display:block; animation:answerIn .3s ease; }
     @keyframes answerIn{ from{opacity:0; transform:translateY(-5px);} to{opacity:1; transform:translateY(0);} }
@@ -112,6 +150,19 @@
     .page-header p{ color:var(--muted); font-size:15px; }
 
     footer{ text-align:center; color:#888; padding:30px; font-size:12px; }
+
+    /* Settings modal */
+    .settings-row{ margin-top:20px; padding:14px 0; border-top:1px solid var(--border); }
+    .settings-row > span{ display:block; margin-bottom:12px; font-size:14px; }
+    .theme-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(90px, 1fr)); gap:10px; }
+    .theme-option{
+      display:flex; flex-direction:column; align-items:center; gap:6px; padding:10px 6px;
+      border:2px solid var(--border); border-radius:12px; background:var(--panel-soft); cursor:pointer;
+      font-size:12px; color:var(--text); transition: border-color .2s ease, transform .2s ease;
+    }
+    .theme-option:hover{ transform:translateY(-1px); }
+    .theme-option.selected{ border-color:var(--button); font-weight:600; }
+    .theme-swatch{ width:32px; height:32px; border-radius:50%; border:1px solid rgba(0,0,0,0.1); }
 
     /* Responsive */
     @media (max-width:650px){
@@ -181,9 +232,9 @@
         <div class="card">
           <div id="uploadArea" class="upload-area" aria-label="File upload area" tabindex="0">
             <h2>Drop files here</h2>
-            <p>Supported: PDF, TXT, DOCX (client-only demo)</p>
+            <p>Supported: PDF, TXT, DOCX</p>
 
-            <input id="fileInput" class="file-input" type="file" aria-label="Upload file" />
+            <input id="fileInput" class="file-input" type="file" accept=".pdf,.txt,.docx" aria-label="Upload file" />
             <div>
               <button id="analyzeBtn" class="primary" type="button">Analyze</button>
             </div>
@@ -241,7 +292,32 @@
   <div id="settingsModal" role="dialog" aria-modal="true" aria-hidden="true" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); align-items:center; justify-content:center; z-index:1001;">
     <div style="background:var(--panel); margin:auto; padding:20px; border-radius:12px; width:min(480px,95%); box-shadow:var(--shadow);">
       <h2>Settings</h2>
-      <p class="small">Theme and preferences will go here.</p>
+      <p class="small">Theme and preferences.</p>
+
+      <div class="settings-row">
+        <span>Theme</span>
+        <div id="themeGrid" class="theme-grid" role="radiogroup" aria-label="Choose a theme">
+          <button class="theme-option" data-theme="light" role="radio" aria-checked="false">
+            <span class="theme-swatch" style="background:#f5f5f5; box-shadow:inset 0 0 0 1px #ddd;"></span>Light
+          </button>
+          <button class="theme-option" data-theme="dark" role="radio" aria-checked="false">
+            <span class="theme-swatch" style="background:#18191b;"></span>Dark
+          </button>
+          <button class="theme-option" data-theme="sepia" role="radio" aria-checked="false">
+            <span class="theme-swatch" style="background:#f4ecd8; box-shadow:inset 0 0 0 1px #ddcda3;"></span>Sepia
+          </button>
+          <button class="theme-option" data-theme="ocean" role="radio" aria-checked="false">
+            <span class="theme-swatch" style="background:#155e8a;"></span>Ocean
+          </button>
+          <button class="theme-option" data-theme="forest" role="radio" aria-checked="false">
+            <span class="theme-swatch" style="background:#3a6b32;"></span>Forest
+          </button>
+          <button class="theme-option" data-theme="contrast" role="radio" aria-checked="false">
+            <span class="theme-swatch" style="background:#000000; box-shadow:inset 0 0 0 2px #ffff00;"></span>Contrast
+          </button>
+        </div>
+      </div>
+
       <div style="margin-top:18px; text-align:right;">
         <button id="closeSettings" class="secondary-button" type="button">Close</button>
       </div>
@@ -249,7 +325,6 @@
   </div>
 
   <script>
-    // Simple UI script: toggles sidebar & page navigation + basic upload demo
     (function(){
       const menuButton = document.getElementById('menuButton');
       const sidebar = document.getElementById('sidebar');
@@ -261,14 +336,40 @@
       const uploadStatus = document.getElementById('uploadStatus');
       const loading = document.getElementById('loading');
       const plannerContent = document.getElementById('plannerContent');
+      const notesText = document.getElementById('notesText');
+      const flashcardsList = document.getElementById('flashcardsList');
+      const themeOptions = Array.from(document.querySelectorAll('.theme-option'));
 
-      // Toggle sidebar (for small screens)
+      // ---------- Theme ----------
+      // Persist the choice in localStorage so it survives reloads. This is a
+      // plain static page (not a Claude.ai artifact), so localStorage is fine
+      // here — it just wasn't wired up to anything before.
+      function applyTheme(theme){
+        document.body.setAttribute('data-theme', theme);
+        themeOptions.forEach(btn => {
+          const isSelected = btn.dataset.theme === theme;
+          btn.classList.toggle('selected', isSelected);
+          btn.setAttribute('aria-checked', String(isSelected));
+        });
+      }
+      const savedTheme = localStorage.getItem('mentalist-theme') ||
+        (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      applyTheme(savedTheme);
+
+      themeOptions.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const theme = btn.dataset.theme;
+          localStorage.setItem('mentalist-theme', theme);
+          applyTheme(theme);
+        });
+      });
+
+      // ---------- Sidebar ----------
       menuButton.addEventListener('click', () => {
         const open = sidebar.classList.toggle('open');
         menuButton.setAttribute('aria-expanded', String(open));
       });
 
-      // Page navigation
       function showPage(pageId){
         sections.forEach(s => {
           const active = s.id === pageId;
@@ -276,7 +377,6 @@
           s.setAttribute('aria-hidden', String(!active));
         });
         sideButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.page === pageId));
-        // close sidebar on nav (mobile)
         sidebar.classList.remove('open');
         menuButton.setAttribute('aria-expanded','false');
       }
@@ -287,7 +387,7 @@
         });
       });
 
-      // Settings modal
+      // ---------- Settings modal ----------
       const settingsModal = document.getElementById('settingsModal');
       const settingsButton = document.getElementById('settingsButton');
       const closeSettings = document.getElementById('closeSettings');
@@ -304,7 +404,7 @@
       closeSettings.addEventListener('click', hideSettings);
       settingsModal.addEventListener('click', (e) => { if(e.target === settingsModal) hideSettings(); });
 
-      // Drag & Drop logic for upload area
+      // ---------- Drag & drop ----------
       ['dragenter','dragover'].forEach(evt => {
         uploadArea.addEventListener(evt, (e) => { e.preventDefault(); uploadArea.classList.add('dragging'); });
       });
@@ -316,86 +416,6 @@
         if (files && files.length) fileInput.files = files;
       });
 
-      // Generate study plan
-      function generateStudyPlan(fileName) {
-        const plan = [
-          {
-            day: 'Day 1',
-            activity: 'Read & Understand',
-            description: 'Review the uploaded material carefully and identify key concepts.',
-            duration: '45 minutes'
-          },
-          {
-            day: 'Day 2-3',
-            activity: 'Create Flashcards',
-            description: 'Generate flashcards from the main topics in ' + fileName + '.',
-            duration: '60 minutes'
-          },
-          {
-            day: 'Day 4',
-            activity: 'Review Notes',
-            description: 'Study the auto-generated summaries and highlight important sections.',
-            duration: '30 minutes'
-          },
-          {
-            day: 'Day 5-6',
-            activity: 'Practice & Test',
-            description: 'Use flashcards to quiz yourself and identify weak areas.',
-            duration: '45 minutes'
-          },
-          {
-            day: 'Day 7',
-            activity: 'Final Review',
-            description: 'Revisit difficult concepts and consolidate your learning.',
-            duration: '30 minutes'
-          }
-        ];
-
-        let planHTML = '';
-        plan.forEach(item => {
-          planHTML += `
-            <div class="plan-item">
-              <h4>${item.day}</h4>
-              <p><strong>${item.activity}</strong></p>
-              <p>${item.description}</p>
-              <div class="duration">⏱ ${item.duration}</div>
-            </div>
-          `;
-        });
-
-        plannerContent.innerHTML = planHTML;
-      }
-
-      // Basic analyze action (client-side demo only)
-      analyzeBtn.addEventListener('click', () => {
-        const files = fileInput.files;
-        if (!files || files.length === 0) {
-          uploadStatus.textContent = 'Please select a file first.';
-          uploadStatus.className = 'status error';
-          return;
-        }
-        uploadStatus.textContent = '';
-        loading.style.display = 'block';
-
-        // Fake processing delay; replace with real API call when available
-        setTimeout(() => {
-          loading.style.display = 'none';
-          uploadStatus.textContent = 'Analysis complete — notes and study plan generated (demo).';
-          uploadStatus.className = 'status success';
-
-          // Demo: place a simple note in the Notes section
-          const notesText = document.getElementById('notesText');
-          notesText.textContent = 'Sample generated notes for ' + files[0].name + '. (This is a demo.)';
-
-          // Generate study plan
-          generateStudyPlan(files[0].name);
-
-          // navigate to notes
-          showPage('notes');
-        }, 900);
-      });
-
-      // Keyboard accessibility for upload area (space/enter triggers file input)
       uploadArea.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
@@ -403,7 +423,159 @@
         }
       });
 
-      // Ensure initial aria-hidden for non-active sections
+      // ---------- Helpers ----------
+      function fileToBase64(file){
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            // result looks like "data:<mime>;base64,AAAA..." — strip the prefix
+            const result = reader.result;
+            const base64 = typeof result === 'string' ? result.split(',')[1] : '';
+            resolve(base64);
+          };
+          reader.onerror = () => reject(new Error('Could not read file'));
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function renderFlashcards(cards){
+        if (!Array.isArray(cards) || cards.length === 0) {
+          flashcardsList.innerHTML = '<p class="small">No flashcards yet.</p>';
+          return;
+        }
+        flashcardsList.innerHTML = cards.map((c, i) => `
+          <div class="flashcard" data-index="${i}">
+            <h3>${escapeHtml(c.question || '')}</h3>
+            <div class="answer">${escapeHtml(c.answer || '')}</div>
+          </div>
+        `).join('');
+
+        flashcardsList.querySelectorAll('.flashcard').forEach(card => {
+          card.addEventListener('click', () => {
+            const answer = card.querySelector('.answer');
+            answer.classList.toggle('visible');
+          });
+        });
+      }
+
+      function renderStudyPlan(plan){
+        if (!Array.isArray(plan) || plan.length === 0) {
+          plannerContent.innerHTML = '<p class="small">No plan yet.</p>';
+          return;
+        }
+        plannerContent.innerHTML = plan.map(item => `
+          <div class="plan-item">
+            <h4>${escapeHtml(item.day || '')}</h4>
+            <p><strong>${escapeHtml(item.activity || '')}</strong></p>
+            <p>${escapeHtml(item.description || '')}</p>
+            <div class="duration">⏱ ${escapeHtml(item.duration || '')}</div>
+          </div>
+        `).join('');
+      }
+
+      function escapeHtml(str){
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      }
+
+      // Fallback study plan generator, used only if the AI call fails but we
+      // still successfully extracted text — so the user gets *something*.
+      function fallbackStudyPlan(fileName){
+        return [
+          { day: 'Day 1', activity: 'Read & Understand', description: 'Review the uploaded material carefully and identify key concepts.', duration: '45 minutes' },
+          { day: 'Day 2-3', activity: 'Create Flashcards', description: 'Generate flashcards from the main topics in ' + fileName + '.', duration: '60 minutes' },
+          { day: 'Day 4', activity: 'Review Notes', description: 'Study the auto-generated summaries and highlight important sections.', duration: '30 minutes' },
+          { day: 'Day 5-6', activity: 'Practice & Test', description: 'Use flashcards to quiz yourself and identify weak areas.', duration: '45 minutes' },
+          { day: 'Day 7', activity: 'Final Review', description: 'Revisit difficult concepts and consolidate your learning.', duration: '30 minutes' }
+        ];
+      }
+
+      // ---------- Analyze flow (real, hits /api/analyze + /api/chat) ----------
+      analyzeBtn.addEventListener('click', async () => {
+        const files = fileInput.files;
+        if (!files || files.length === 0) {
+          uploadStatus.textContent = 'Please select a file first.';
+          uploadStatus.className = 'status error';
+          return;
+        }
+
+        const file = files[0];
+        uploadStatus.textContent = '';
+        uploadStatus.className = 'status';
+        loading.style.display = 'block';
+        analyzeBtn.disabled = true;
+
+        try {
+          // 1. Extract text from the uploaded file via /api/analyze
+          const base64 = await fileToBase64(file);
+
+          const analyzeRes = await fetch('/api/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fileData: base64, fileType: file.type })
+          });
+          const analyzeData = await analyzeRes.json();
+
+          if (!analyzeRes.ok) {
+            throw new Error(analyzeData.error || 'Could not read the file.');
+          }
+
+          const extractedText = analyzeData.text;
+
+          // 2. Ask Gemini (via /api/chat) to turn the text into notes,
+          //    flashcards, and a study plan, as JSON.
+          const prompt = [
+            'You are a study assistant. Based ONLY on the study material below,',
+            'produce a JSON object with exactly these keys:',
+            '"notes" (a clear, well-organized plain-text summary of the material),',
+            '"flashcards" (an array of 5-8 objects like {"question": "...", "answer": "..."}),',
+            '"studyPlan" (an array of 5-7 objects like {"day": "Day 1", "activity": "...", "description": "...", "duration": "..."}).',
+            'Respond with ONLY the raw JSON object, no markdown code fences, no extra commentary.',
+            '',
+            'STUDY MATERIAL:',
+            extractedText.slice(0, 12000)
+          ].join('\n');
+
+          const chatRes = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: prompt })
+          });
+          const chatData = await chatRes.json();
+
+          if (!chatRes.ok) {
+            throw new Error(chatData.error || 'The AI request failed.');
+          }
+
+          let parsed;
+          try {
+            const cleaned = chatData.answer.replace(/```json|```/g, '').trim();
+            parsed = JSON.parse(cleaned);
+          } catch (parseErr) {
+            // AI didn't return clean JSON — fall back to showing raw notes only
+            parsed = { notes: chatData.answer, flashcards: [], studyPlan: fallbackStudyPlan(file.name) };
+          }
+
+          notesText.textContent = parsed.notes || 'No notes were generated.';
+          renderFlashcards(parsed.flashcards);
+          renderStudyPlan(parsed.studyPlan && parsed.studyPlan.length ? parsed.studyPlan : fallbackStudyPlan(file.name));
+
+          uploadStatus.textContent = 'Analysis complete — notes, flashcards, and a study plan were generated.';
+          uploadStatus.className = 'status success';
+
+          showPage('notes');
+
+        } catch (err) {
+          console.error(err);
+          uploadStatus.textContent = err.message || 'Something went wrong while analyzing the file.';
+          uploadStatus.className = 'status error';
+        } finally {
+          loading.style.display = 'none';
+          analyzeBtn.disabled = false;
+        }
+      });
+
       sections.forEach(s => s.setAttribute('aria-hidden', String(!s.classList.contains('active'))));
     })();
   </script>
