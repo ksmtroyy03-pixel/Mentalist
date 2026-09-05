@@ -1,7 +1,42 @@
+// --- Very lightweight in-memory rate limiter ---------------------------
+// This endpoint calls Gemini using YOUR server-side API key, so without
+// some limit, anyone who finds this URL can hit it directly (bypassing
+// your frontend entirely) and burn through your quota.
+//
+// Caveat: this only protects a single serverless instance's memory, and
+// resets on cold start / redeploy. It's a reasonable speed bump for a
+// small demo app, but it is NOT a substitute for real auth or a proper
+// rate-limiting service (e.g. Upstash Ratelimit, Vercel's built-in
+// firewall rules) if this goes to real users.
+const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+const RATE_LIMIT_MAX_REQUESTS = 10;
+const requestLog = new Map(); // ip -> array of timestamps
+
+function isRateLimited(ip) {
+  const now = Date.now();
+  const timestamps = (requestLog.get(ip) || []).filter(
+    t => now - t < RATE_LIMIT_WINDOW_MS
+  );
+  timestamps.push(now);
+  requestLog.set(ip, timestamps);
+  return timestamps.length > RATE_LIMIT_MAX_REQUESTS;
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({
       error: "Method not allowed"
+    });
+  }
+
+  const ip =
+    req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+    req.socket?.remoteAddress ||
+    "unknown";
+
+  if (isRateLimited(ip)) {
+    return res.status(429).json({
+      error: "Too many requests. Please wait a minute and try again."
     });
   }
 
@@ -47,7 +82,8 @@ export default async function handler(req, res) {
           ],
           // Token optimization settings
           generationConfig: {
-            maxOutputTokens: 500, // Limit output to save tokens
+            maxOutputTokens: 1500, // Raised from 500 so JSON-structured
+            // responses (notes + flashcards + plan) don't get cut off mid-way
             temperature: 0.7 // Consistent responses, fewer retries
           }
         })
@@ -89,12 +125,16 @@ export default async function handler(req, res) {
       });
     }
 
-    // Log token usage if available
+    // Log token usage if available.
+    // Note: Gemini's actual field names are promptTokenCount /
+    // candidatesTokenCount / totalTokenCount (not …Tokens) — the previous
+    // version of this log referenced the wrong keys and always printed
+    // "undefined".
     if (data.usageMetadata) {
       console.log("Token usage:", {
-        promptTokens: data.usageMetadata.promptTokens,
-        candidatesTokens: data.usageMetadata.candidatesTokens,
-        totalTokens: data.usageMetadata.totalTokens
+        promptTokens: data.usageMetadata.promptTokenCount,
+        candidatesTokens: data.usageMetadata.candidatesTokenCount,
+        totalTokens: data.usageMetadata.totalTokenCount
       });
     }
 
